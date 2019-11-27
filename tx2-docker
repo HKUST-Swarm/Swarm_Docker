@@ -2,7 +2,8 @@
 # Copyright (c) 2017, Technica Corporation. All rights reserved.
 
 NV_LIBS="/usr/lib/aarch64-linux-gnu \
-	 /usr/local/cuda/lib64"
+	 /usr/local/cuda/lib64 \
+	/home/dji/SwarmConfig/realsense"
 
 LD_PATH="/usr/lib/aarch64-linux-gnu \
          /usr/lib/aarch64-linux-gnu/tegra \
