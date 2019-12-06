@@ -14,7 +14,9 @@ GPU_DEVICES="/dev/nvhost-ctrl \
              /dev/nvhost-prof-gpu \
              /dev/nvmap \
              /dev/nvhost-gpu \
-             /dev/nvhost-as-gpu"
+             /dev/nvhost-as-gpu \
+             /dev/ttyUSB0 \
+             /dev/ttyTHS2"
 
 NV_DOCKER_ARGS="--net=host"
 
