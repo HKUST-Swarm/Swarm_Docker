@@ -34,7 +34,7 @@ Logs:
 
 
 To do list: 
-- ~pass UART as device ~
+- ~pass UART as device~
 - ~contain DJI_SDK & UWB inside the docker~
 - GCC V7 updates
 - test on uav 
