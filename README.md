@@ -36,8 +36,9 @@ Logs:
 To do list: 
 - ~pass UART as device~
 - ~contain DJI_SDK & UWB inside the docker~
-- GCC V7 updates
+- ~GCC V7 updates~
+- move realsense drive and ros wrapper inside docker 
 - test on uav 
-- tensoflow & pytorch confi
-- add docker run without shellscript
+- tensoflow & pytorch config
+- ~add docker run without shellscript~
 - checking binary difference and patch updates
