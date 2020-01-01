@@ -1,20 +1,58 @@
 # Swarm_Docker
 UAV Swarm --2019-20 FYP
-### For manifold 2g 
+
+Docker image is under Docker Hub  and under Docker registry with repository name a xyaoab/swarmuav:latest, 192.168.1.204:5000/swarm_push:latest
+
+## Setup docker command on host machines for manifold 2G
 Packages required:
 - opencv 3.4.1
 - cuda-9.0 library
-- TX2 giving docker access to gpu[tx2-docker wrapper script under /bin]
+- TX2 giving docker access to gpu(tx2-docker wrapper script under /bin)
 - cv-bridge package with pointing to unique opencv 3.4.1
-Docker image is under Docker Hub  and under Docker registry with repository name a xyaoab/swarmuav:latest, 192.168.1.204:5000/swarm_push:latest
+##### Purpose: 
+- Run docker image to create docker container 
+- Update docker image for distribution 
+##### Setup:
+1. Configure storage path for docker repository to /ssd/docker
+Inside /etc/docker/daemon.json,
+```
+{
+ "graph": "/ssd/docker"
+}
+```
+2. Put [tx2-docker wrapper script](https://github.com/xyaoab/Swarm_Docker/blob/master/tx2-docker) under /bin 
+The command passes required devices, library to the docker engine. 
+3. Download [run_docker.sh](https://github.com/xyaoab/Swarm_Docker/blob/master/run_docker.sh) to host machines
+4. Put [host_cmd.sh](https://github.com/xyaoab/Swarm_Docker/blob/master/host_cmd.sh) within docker image 
 
-## Docker image push and pull pipeline 
+##### Usage:
+Start docker container:
+``` 
+./run_docker.sh [FLAG] 
+            	 -r read from SwarmConfig to execute 
+            	 -e edit docker container 
+            	 -d pull docker image from hub 
+            	 -p pull docker image from private registry 
+            	 -u update docker image to private registry 
+            	 -h help
+
+```
+Stop docker container:
+```
+./stop_docker.sh
+```
+Stop all nodes:
+```
+stop_ros.sh
+```
+
+### Docker image push and pull pipeline 
 #### For [docker private registry without certification](https://docs.docker.com/registry/insecure/)
-Usage: 
+##### Purpose: 
 - Check docker image layer differnece between clients and server machine
 - Only push/pull updated layer 
-
-1. Register insecure registries on the server(IP: 192.168.1.204) and client machines 
+##### Usage:
+1. Configure insecure registries on the server(IP: 192.168.1.204) and client machines 
   Inside /etc/docker/daemon.json, 
   ```
   {
