@@ -124,7 +124,7 @@ To do list:
 - ~contain DJI_SDK & UWB inside the docker~
 - ~GCC V7 updates~
 - move realsense drive and ros wrapper inside docker 
-- test on uav 
+- ~test on uav~
 - tensoflow & pytorch config
 - ~add docker run without shellscript~
-- checking binary difference and patch updates
+- ~checking binary difference and patch updates~
