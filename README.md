@@ -9,7 +9,7 @@ Packages required:
 Docker image is under Docker Hub  and under Docker registry with repository name a xyaoab/swarmuav:latest, 192.168.1.204:5000/swarm_push:latest
 
 ## Docker image push and pull pipeline 
-#### For [docker private registry without certification] (https://docs.docker.com/registry/insecure/)
+#### For [docker private registry without certification](https://docs.docker.com/registry/insecure/)
 Usage: 
 - Check docker image layer differnece between clients and server machine
 - Only push/pull updated layer 
