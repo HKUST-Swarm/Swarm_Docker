@@ -16,7 +16,10 @@ GPU_DEVICES="/dev/nvhost-ctrl \
              /dev/nvhost-gpu \
              /dev/nvhost-as-gpu \
              /dev/ttyUSB0 \
-             /dev/ttyTHS2"
+             /dev/ttyTHS2 \
+             /dev/video0 \
+             /dev/video1 \
+             /dev/video2 "
 
 NV_DOCKER_ARGS="--net=host"
 
