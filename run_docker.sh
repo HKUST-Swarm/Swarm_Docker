@@ -2,7 +2,7 @@
 trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
-DOCKER_IMAGE=xyaoab/swarmuav:latest
+DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
 #print help
 function echoUsage()
 {
@@ -40,13 +40,16 @@ while getopts "ehr" opt; do
             ;;
     esac
 done
-
-if [ $EDIT -eq 1 ]; then 
+ #-v /dev:/dev \
+            #--privileged \
+if [ $EDIT -eq 1 ]; then
     tx2-docker run \
             -v /home/dji/.ssh:/root/.ssh \
+            --privileged \
+            -v /dev:/dev \
             --rm \
             -it ${DOCKER_IMAGE} \
-            /bin/bash 
+            /bin/bash
 
 elif [ $RUN -eq 1 ]; then
 
@@ -79,7 +82,7 @@ elif [ $RUN -eq 1 ]; then
         echo "Start ros core"
         roscore &> $LOG_PATH/log_roscore.txt &
         echo "roscore:"$! >> $PID_FILE
-        #using roscore pid to track 
+        #using roscore pid to track
         ROSCORE_PID=$!
         #Sleep 5 wait for core
         sleep 5
