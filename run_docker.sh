@@ -2,14 +2,16 @@
 trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
-DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
+DOCKER_IMAGE=192.168.1.204:5000/swarm_push:latest
 #print help
 function echoUsage()
 {
     echo -e "Usage: ./run_docker.sh [FLAG] \n\
             \t -r read from SwarmConfig to execute \n\
             \t -e edit docker container \n\
-            \t -p pull docker image from hub \n\
+            \t -d pull docker image from hub \n\
+            \t -p pull docker image from private registry \n\
+            \t -u update docker image to private registry \n\
             \t -h help" >&2
 }
 if [ "$#" -lt 1 ]; then
@@ -21,7 +23,7 @@ RUN=0;
 EDIT=0;
 PULL=0;
 
-while getopts "ehr" opt; do
+while getopts "ehrdpu" opt; do
     case "$opt" in
         h)
             echoUsage
@@ -31,7 +33,13 @@ while getopts "ehr" opt; do
             ;;
         e)  EDIT=1
             ;;
-        p)  docker pull xyaoab/swarmuav:latest
+        d)  docker pull xyaoab/swarmuav:latest
+            exit 0
+            ;;
+        p)  docker pull ${DOCKER_IMAGE}
+            exit 0
+            ;;
+        u) docker push ${DOCKER_IMAGE}
             exit 0
             ;;
         *)
@@ -45,7 +53,7 @@ done
 if [ $EDIT -eq 1 ]; then
     tx2-docker run \
             -v /home/dji/.ssh:/root/.ssh \
-            --privileged \
+            --priviledged \
             -v /dev:/dev \
             --rm \
             -it ${DOCKER_IMAGE} \
@@ -254,8 +262,6 @@ elif [ $RUN -eq 1 ]; then
     tx2-docker run \
                 -v /home/dji/swarm_log:/home/dji/swarm_log \
                 -v $PID_FILE:$PID_FILE \
-                #save space
-                #-v /home/dji/.ssh:/root/.ssh \
                 --rm \
                 -e PID_FILE=$PID_FILE \
                 -e LOG_PATH=$LOG_PATH \
