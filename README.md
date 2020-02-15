@@ -1,7 +1,7 @@
 # Swarm_Docker
 UAV Swarm --2019-20 FYP
 
-Docker image is under Docker Hub  and under Docker registry with repository name a xyaoab/swarmuav:latest, 192.168.1.204:5000/swarm_push:latest
+Docker image is under Docker Hub  and under Docker registry with repository name a [xyaoab/swarmuav:latest](https://hub.docker.com/repository/registry-1.docker.io/xyaoab/swarmuav/tags?page=1), 192.168.1.204:5000/swarm_push:latest
 
 ## Setup docker command on host machines for manifold 2G
 Packages required:
@@ -116,8 +116,45 @@ Launch system from shell script:
 Logs: 
 1. pass variables using -v 
 2. pass ttyusb in /dev using -d
-3. cmake swarm_w spackages  (remove swarm_detection[aruco]; cp usr/share/opencv; catkin build can't link header file[solved by catkin_make instead)
+3. cmake swarm_ws spackages  (remove swarm_detection[aruco]; cp usr/share/opencv; catkin build can't link header file[solved by catkin_make instead)
 
+#### 2/15 Updates 
+Logs:
+1. pytorch 1.3.0 install from source, [reference](https://devtalk.nvidia.com/default/topic/1042821/jetson-tx2/pytorch-install-broken)
+Inside CMakeLists.txt
+```
+export USE_NCLL=:OFF
+export BUILD_CAFFE_OPS=:false
+export TORCH_CUDA_ARCH_LIST="6.2"
+
+```
+2. Tensorflow [reference](https://devtalk.nvidia.com/default/topic/1038957/jetson-tx2/tensorflow-for-jetson-tx2-/)
+```
+sudo pip install --ignore-installed enum34
+sudo pip install --extra-index-url=http://developer.download.nvidia.com/compute/redist/jp/v33/tensorflow-gpu/
+```
+NOTE: tensorrt is not yet installed
+3. VINS-Fisheye
+First-time user:
+Inside vins_estimator/CMakeList.txt, after linking target executable
+```
+add_dependencies(vins_lib vins_generate_messages_cpp)
+```
+4. VisionWorks 
+On host machine,
+```
+docker cp /var/cuda-repo-9-0-local [CONTAINER_ID]:/var/
+```
+Inside docker,
+```
+cd /var/cuda-repo-9-0-local
+dpkg -i[cuda-license] 
+dpkg -i [cuda-cudart] 
+```
+After install visionworks related .deb, g-streamer and the other dependencies are installed by 
+```
+apt-get -f install
+```
 
 To do list: 
 - ~pass UART as device~
@@ -125,6 +162,7 @@ To do list:
 - ~GCC V7 updates~
 - move realsense drive and ros wrapper inside docker 
 - ~test on uav~
-- tensoflow & pytorch config
+- ~tensoflow & pytorch config~
 - ~add docker run without shellscript~
 - ~checking binary difference and patch updates~
+- ptgrey fisheye driver in docker
