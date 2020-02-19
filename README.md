@@ -12,7 +12,7 @@ Packages required:
 ##### Purpose: 
 - Run docker image to create docker container 
 - Update docker image for distribution 
-##### Setup:
+##### [Setup]{https://www.guguweb.com/2019/02/07/how-to-move-docker-data-directory-to-another-location-on-ubuntu/}:
 1. Configure storage path for docker repository to /ssd/docker
 Inside /etc/docker/daemon.json,
 ```
