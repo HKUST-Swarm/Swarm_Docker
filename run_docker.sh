@@ -54,8 +54,7 @@ done
 if [ $EDIT -eq 1 ]; then
     tx2-docker run \
             -v /home/dji/.ssh:/root/.ssh \
-            --priviledged \
-            -v /dev:/dev \
+            -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             --rm \
             -it ${DOCKER_LOCAL_IMAGE} \
             /bin/bash
