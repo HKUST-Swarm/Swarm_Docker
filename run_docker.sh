@@ -3,6 +3,7 @@ trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 DOCKER_IMAGE=192.168.1.204:5000/swarm_push:latest
+DOCKER_LOCAL_IMAGE=xyaoab/swarmuav:latest
 #print help
 function echoUsage()
 {
@@ -33,13 +34,13 @@ while getopts "ehrdpu" opt; do
             ;;
         e)  EDIT=1
             ;;
-        d)  docker pull xyaoab/swarmuav:latest
+        d)  docker pull ${DOCKER_LOCAL_IMAGE}
             exit 0
             ;;
         p)  docker pull ${DOCKER_IMAGE}
             exit 0
             ;;
-        u) docker push ${DOCKER_IMAGE}
+        u) docker push swarmuav:latest ${DOCKER_IMAGE}
             exit 0
             ;;
         *)
@@ -56,7 +57,7 @@ if [ $EDIT -eq 1 ]; then
             --priviledged \
             -v /dev:/dev \
             --rm \
-            -it ${DOCKER_IMAGE} \
+            -it ${DOCKER_LOCAL_IMAGE} \
             /bin/bash
 
 elif [ $RUN -eq 1 ]; then
