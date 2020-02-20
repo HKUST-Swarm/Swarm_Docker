@@ -14,7 +14,8 @@ GPU_DEVICES="/dev/nvhost-ctrl \
              /dev/nvhost-prof-gpu \
              /dev/nvmap \
              /dev/nvhost-gpu \
-             /dev/nvhost-as-gpu"
+             /dev/nvhost-as-gpu "
+            # /dev/ttyPTGREY"
             # /dev/ttyUSB0 \
             # /dev/ttyTHS2 \
             # /dev/video0 \
@@ -51,9 +52,9 @@ build_env() {
 if [[ $# -ge 2 && $1 == "run" ]]; then
         echo "Running an nvidia docker image"
         build_docker_args
-	build_env
+	    build_env
 
-	DOCKER_OPTS="-e LD_LIBRARY_PATH=$LD_LIBRARY_PATH $NV_DOCKER_ARGS ${@:2}"
+    	DOCKER_OPTS="-e LD_LIBRARY_PATH=$LD_LIBRARY_PATH $NV_DOCKER_ARGS ${@:2}"
         echo "docker run $DOCKER_OPTS"
         docker run $DOCKER_OPTS
 else
