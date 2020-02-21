@@ -4,6 +4,7 @@ UAV Swarm --2019-20 FYP
 Docker image is under Docker Hub  and under Docker registry with repository name a [xyaoab/swarmuav:latest](https://hub.docker.com/repository/registry-1.docker.io/xyaoab/swarmuav/tags?page=1), 192.168.1.204:5000/swarm_push:latest
 
 ## Setup docker command on host machines for manifold 2G
+
 Packages required:
 - opencv 3.4.1
 - cuda-9.0 library
@@ -12,7 +13,7 @@ Packages required:
 ##### Purpose: 
 - Run docker image to create docker container 
 - Update docker image for distribution 
-##### [Setup]{https://www.guguweb.com/2019/02/07/how-to-move-docker-data-directory-to-another-location-on-ubuntu/}:
+##### Setup
 1. Configure storage path for docker repository to /ssd/docker
 Inside /etc/docker/daemon.json,
 ```
@@ -52,6 +53,7 @@ stop_ros.sh
 - Check docker image layer differnece between clients and server machine
 - Only push/pull updated layer 
 ##### Usage:
+
 1. Configure insecure registries on the server(IP: 192.168.1.204) and client machines 
   Inside /etc/docker/daemon.json, 
   ```
@@ -155,6 +157,20 @@ After install visionworks related .deb, g-streamer and the other dependencies ar
 ```
 apt-get -f install
 ```
+####2/20 Updates :
+Logs: 
+1. Swarm detection replaces swarm_yolo
+2. Swarm localization replaces swarm pkgs
+3. Darknet installation from souce with CUDA and OPENCV 
+4. Ptgrey_reader package installation
+On host machine, trigger udev event to setup ttyPTGREY
+append /etc/udev/rules.d/99-usb-serial.rules
+
+Running docker with (inside )
+```
+--priviledged -v /dev/ttyPTGREY:/dev/ttyPTGREY
+
+```
 
 To do list: 
 - ~pass UART as device~
@@ -165,4 +181,4 @@ To do list:
 - ~tensoflow & pytorch config~
 - ~add docker run without shellscript~
 - ~checking binary difference and patch updates~
-- ptgrey fisheye driver in docker
+- ~ptgrey fisheye driver in docker~
