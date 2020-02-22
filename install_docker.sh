@@ -16,13 +16,13 @@ sudo apt-get update
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 # add current user to docker group so there is no need to use sudo when running docker
 sudo groupadd docker
-sudo usermod -aG $(whoami)
+sudo usermod -aG docker $(whoami)
 newgrp docker
 
 docker run hello-world
 if docker run hello-world; then
-    echo "Running docker successful"<F12>*
+    echo "Running docker successful"
 else
     echo "Could not get docker! Aborting." 1>&2
         exit 1
-fii
+fi

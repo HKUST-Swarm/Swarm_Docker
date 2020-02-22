@@ -1,7 +1,7 @@
 #!/bin/bash
 git pull -f https://github.com/xyaoab/Swarm_Docker.git
 sudo service docker stop
-cd $PWD/Swarm_Docker
+cd $HOME/Swarm_Docker
 sudo cp ./daemon.json /etc/docker/daemon.json
 sudo rsync -aP /var/lib/docker /ssd/
 sudo mv /var/lib/docker /var/lib/docker.old
