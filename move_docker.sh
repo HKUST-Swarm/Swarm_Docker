@@ -5,7 +5,7 @@ cd $HOME/Swarm_Docker
 sudo cp ./daemon.json /etc/docker/daemon.json
 sudo rsync -aP /var/lib/docker /ssd/
 sudo mv /var/lib/docker /var/lib/docker.old
-sudo service start docker
+sudo service docker start
 if ["$?"="0"];then
     echo "Docker changes to SSD"
     sudo rm -rf /var/lib/docker.old
