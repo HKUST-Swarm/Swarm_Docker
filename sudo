@@ -1,2 +1,0 @@
-SUBSYSTEM==TTY,ATTRS{idVendor}==1e10,
-ATTRS{idProduct}==3300, SYMLINK+=ttyPTGREY /etc/udev/rules.d/99-usb-serial.rules
