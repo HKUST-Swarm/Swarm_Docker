@@ -53,7 +53,8 @@ done
             #--privileged \
 if [ $EDIT -eq 1 ]; then
     tx2-docker run \
-            --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
+            --privileged -v /dev/ttyPTGREY:/dev/ttyPREY \
+            -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /home/dji/.ssh:/root/.ssh \
             --rm \
             -it ${DOCKER_LOCAL_IMAGE} \
