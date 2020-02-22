@@ -164,8 +164,10 @@ Logs:
 3. Darknet installation from souce with CUDA and OPENCV 
 4. Ptgrey_reader package installation
 On host machine, trigger udev event to setup ttyPTGREY
-append /etc/udev/rules.d/99-usb-serial.rules
-
+append /etc/udev/rules.d/99-usb-ptgrey.rules
+```
+sudo udevadm control --reload && udevadm trigger
+```
 Running docker with (inside )
 ```
 --priviledged -v /dev/ttyPTGREY:/dev/ttyPTGREY

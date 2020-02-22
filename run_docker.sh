@@ -53,7 +53,7 @@ done
             #--privileged \
 if [ $EDIT -eq 1 ]; then
     tx2-docker run \
-            --privileged -v /dev/ttyPTGREY:/dev/ttyPREY \
+            --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /home/dji/.ssh:/root/.ssh \
             --rm \
@@ -74,9 +74,9 @@ elif [ $RUN -eq 1 ]; then
 
     source $CONFIG_PATH/autostart_config.sh
 
-    if [ "$#" -ge 2 ]; then
-        export SWARM_START_MODE=$2
-        echo "Start swarm with MODE" $2
+    if [ "$#" -ge 1 ]; then
+        export SWARM_START_MODE=$1
+        echo "Start swarm with MODE" $1
     fi
 
     if [ $SWARM_START_MODE -ge 0 ]
@@ -91,10 +91,8 @@ elif [ $RUN -eq 1 ]; then
         echo "Start ros core"
         roscore &> $LOG_PATH/log_roscore.txt &
         echo "roscore:"$! >> $PID_FILE
-        #using roscore pid to track
-        ROSCORE_PID=$!
-        #Sleep 5 wait for core
-        sleep 5
+        #/bin/sleep 5 wait for core
+        /bin/sleep 5
 
         echo "Will start camera"
         export START_CAMERA=1
@@ -107,6 +105,7 @@ elif [ $RUN -eq 1 ]; then
         export START_UWB_VICON=0
         export USE_VICON_CTRL=0
         export USE_DJI_IMU=0
+        export START_SWARM_LOOP=0
 
         if [ $SWARM_START_MODE -ge 1 ]
         then
@@ -136,8 +135,14 @@ elif [ $RUN -eq 1 ]; then
             echo "Will start UWB FUSE"
             START_UWB_FUSE=1
         fi
+        
+        if [ $SWARM_START_MODE -ge 5 ]
+        then
+	        echo "Will start swarm loop"
+            START_SWARM_LOOP=1
+        fi
 
-        if [ $SWARM_START_MODE -eq 5 ]
+        if [ $SWARM_START_MODE -eq 8 ]
         then
             echo "Will start Control with VICON odom and disable before"
             START_CONTROL=1
@@ -181,7 +186,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $CONFIG_NETWORK -eq 1 ]; then
         /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
         echo "Wait 10 for network setup"
-        sleep 10
+        /bin/sleep 1
     fi
 
 
@@ -193,41 +198,6 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_CAMERA -eq 1 ]
     then
-        echo "Trying to start camera driver"
-        if [ $CAM_TYPE -eq 0 ]
-        then
-            echo "Will use pointgrey Camera"
-            echo "Start Camera in unsync mode"
-            #roslaunch swarm_vo_fuse stereo.launch is_sync:=false config_path:=$CONFIG_PATH/camera_config.yaml &> $LOG_PATH/log_camera.txt &
-            PG_PID=$!
-            echo "PTGREY_UNSYNC:"$! >> $PID_FILE
-            if [ $START_CAMERA_SYNC -eq 1 ]
-            then
-                sleep 5
-                sudo kill -- $PG_PID
-                echo "Start camera in sync mode"
-                sleep 1.0
-                #roslaunch swarm_vo_fuse stereo.launch is_sync:=true config_path:=$CONFIG_PATH/camera_config.yaml &>> $LOG_PATH/log_camera.txt &
-                echo "PTGREY_SYNC:"$! >> $PID_FILE
-            fi
-        fi
-
-        if [ $CAM_TYPE -eq 1 ]
-        then
-            echo "Will use MYNT Camera"
-            source /home/dji/source/MYNT-EYE-S-SDK/wrappers/ros/devel/setup.bash
-            roslaunch mynt_eye_ros_wrapper mynteye.launch request_index:=1 &> $LOG_PATH/log_camera.txt &
-            echo "MYNT_CAMERA:"$! >> $PID_FILE
-            sleep 2
-        fi
-
-        if [ $CAM_TYPE -eq 2 ]
-        then
-            echo "Will use bluefox Camera"
-            roslaunch bluefox2 single_node.launch device:=$CAMERA_ID &> $LOG_PATH/log_camera.txt &
-            echo "BLUEFOX:"$! >> $PID_FILE
-        fi
-
         if [ $CAM_TYPE -eq 3 ]
         then
             echo "Will use realsense Camera"
@@ -255,9 +225,18 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $RECORD_BAG -eq 2 ]
     then
-        rosbag record -o /ssd/bags/swarm_vicon_bags/swarm_source_log.bag /swarm_drones/swarm_frame /swarm_drones/swarm_frame_predict /vins_estimator/imu_propagate /vins_estimator/odometry &
+        rosbag record -o $LOG_PATH/swarm_source_log.bag /vins_estimator/imu_propagate /vins_estimator/odometry /swarm_drones/swarm_drone_source_data
     fi
 
+    if [ $RECORD_BAG -eq 3 ]
+    then
+        rosbag record -o $LOOP_LOG_PATH/swarm_loodp_log.bag /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /dji_sdk_1/dji_sdk/imu
+    fi
+
+    #if [ $RECORD_BAG -eq 4 ]
+    #then
+    #    rosbag record -o /ssd/bags/fisheye_vins /dji_sdk_1/dji_sdk/imu /stereo/left/image_raw /stereo/right/image_raw /vins_estimator/odometry /vins_estimator/imu_propagate
+    #fi
 
 
     tx2-docker run \
@@ -268,13 +247,14 @@ elif [ $RUN -eq 1 ]; then
                 -e LOG_PATH=$LOG_PATH \
                 -e START_DJISDK=$START_DJISDK \
                 -e START_VO_STUFF=$START_VO_STUFF \
+                -e START_CAMERA=$START_CAMERA \
                 -e CAM_TYPE=$CAM_TYPE \
                 -e START_UWB_VICON=$START_UWB_VICON \
                 -e START_UWB_COMM=$START_UWB_COMM \
                 -e START_UWB_FUSE=$START_UWB_FUSE \
                 -e START_CONTROL=$START_CONTROL \
                 -e USE_VICON_CTRL=$USE_VICON_CTRL \
-                -it ${DOCKER_IMAGE} \
+                -it ${DOCKER_LOCAL_IMAGE} \
                 /bin/bash /root/catkin_ws/host_cmd.sh
 
     wait $ROSCORE_PID
