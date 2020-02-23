@@ -66,6 +66,7 @@ elif [ $RUN -eq 1 ]; then
 
     echo "Sourceing host machine..."
     source /opt/ros/kinetic/setup.bash
+    source /home/dji/swarm_ws/devel/setup.bash
 
     export ROS_MASTER_URI=http://localhost:11311
 
@@ -223,14 +224,14 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_DJISDK -eq 1 ]
     then
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_sdk.sh" &> $LOG_PATH/log_docker.txt 
         sleep 5
     fi
 
 
     if [ $START_SWARM_LOOP -eq 1 ]
     then
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_loop.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_loop.sh" &> $LOG_PATH/log_docker.txt 
         sleep 5
     fi
 
@@ -275,37 +276,37 @@ elif [ $RUN -eq 1 ]; then
     then
         /bin/sleep 10
         echo "Image ready start VO"
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_vo.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh" &> $LOG_PATH/log_docker.txt 
     fi
 
 
     if [ $START_UWB_VICON -eq 1 ]
     then
         echo "Start UWB VO"
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_uwb_vicon.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh" &> $LOG_PATH/log_docker.txt 
     fi
 
     if [ $START_UWB_COMM -eq 1 ]
     then
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_uwb_comm.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh" &> $LOG_PATH/log_docker.txt 
     fi
 
     if [ $START_UWB_FUSE -eq 1 ]
     then
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_uwb_fuse.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh" &> $LOG_PATH/log_docker.txt 
         sleep 1
     fi
 
 
     if [ $START_CONTROL -eq 1 ]
     then
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_control.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh" &> $LOG_PATH/log_docker.txt 
     fi
 
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "Will start swarm loop"
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_swarmloop.sh" &> $LOG_PATH/log_docker.txt 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh" &> $LOG_PATH/log_docker.txt 
     fi
 
     if [ $RECORD_BAG -eq 1 ]
