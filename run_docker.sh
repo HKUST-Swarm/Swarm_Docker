@@ -64,9 +64,8 @@ if [ $EDIT -eq 1 ]; then
 
 elif [ $RUN -eq 1 ]; then
 
-    echo "Sourceing..."
+    echo "Sourceing host machine..."
     source /opt/ros/kinetic/setup.bash
-    source /home/dji/swarm_ws/devel/setup.bash
 
     export ROS_MASTER_URI=http://localhost:11311
 
@@ -194,15 +193,19 @@ elif [ $RUN -eq 1 ]; then
             --rm \
             -e PID_FILE=$PID_FILE \
             -e LOG_PATH=$LOG_PATH \
-            -e START_DJISDK=$START_DJISDK \
+            #-e START_DJISDK=$START_DJISDK \
             -e START_VO_STUFF=$START_VO_STUFF \
             -e START_CAMERA=$START_CAMERA \
             -e CAM_TYPE=$CAM_TYPE \
+            -e START_DJISDK=$START_DJISDK \
             -e START_UWB_VICON=$START_UWB_VICON \
             -e START_UWB_COMM=$START_UWB_COMM \
             -e START_UWB_FUSE=$START_UWB_FUSE \
             -e START_CONTROL=$START_CONTROL \
             -e USE_VICON_CTRL=$USE_VICON_CTRL \
+            -e START_CAMERA_SYNC=$START_CAMERA_SYNC \
+            -e START_SWARM_LOOP=$START_SWARM_LOOP \
+            -e USE_DJI_IMU=$USE_DJI_IMU \
             --name swarm \
             -d \
             -it ${DOCKER_LOCAL_IMAGE} \
@@ -219,18 +222,91 @@ elif [ $RUN -eq 1 ]; then
     sudo /usr/sbin/nvpmodel -m0
     sudo /home/dji/jetson_clocks.sh
 
+    if [ $START_DJISDK -eq 1 ]
+    then
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh"
+        sleep 5
+    fi
+
+
+    if [ $START_SWARM_LOOP -eq 1 ]
+    then
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_loop.sh"
+        sleep 5
+    fi
+
 
     if [ $START_CAMERA -eq 1 ]
     then
+        echo "Trying to start camera driver"
+        # if [ $CAM_TYPE -eq 0 ]
+        # then
+        # echo "Will use pointgrey Camera"
+        # echo "Start Camera in unsync mode"
+        # #roslaunch swarm_vo_fuse stereo.launch is_sync:=false config_path:=$CONFIG_PATH/camera_config.yaml &> $LOG_PATH/log_camera.txt &
+        # PG_PID=$!
+        # echo "PTGREY_UNSYNC:"$! >> $PID_FILE
+        #     if [ $START_CAMERA_SYNC -eq 1 ]
+        #     then
+        #         /bin/sleep 5
+        #         sudo kill -- $PG_PID
+        #         echo "Start camera in sync mode"
+        #         /bin/sleep 1.0
+        #         #roslaunch swarm_vo_fuse stereo.launch is_sync:=true config_path:=$CONFIG_PATH/camera_config.yaml &>> $LOG_PATH/log_camera.txt &
+        #         echo "PTGREY_SYNC:"$! >> $PID_FILE
+        #     fi
+        # fi
+
         if [ $CAM_TYPE -eq 3 ]
         then
             echo "Will use realsense Camera"
-            roslaunch realsense2_camera rs_camera.launch  &> $LOG_PATH/log_camera.txt &
+            taskset -c 4-6  roslaunch realsense2_camera rs_camera.launch  &> $LOG_PATH/log_camera.txt &
+            echo "REALSENSE:"$! >> $PID_FILE
+
+            /bin/sleep 10
             echo "writing camera config"
             #/home/dji/SwarmAutoInstall/rs_write_cameraconfig.py
-            rosrun dynamic_reconfigure dynparam set /camera/stereo_module 'emitter_enabled' false
-            echo "REALSENSE:"$! >> $PID_FILE
+            #rosrun dynamic_reconfigure dynparam set /camera/stereo_module 'emitter_enabled' false
         fi
+    fi
+
+
+
+    if [ $START_VO_STUFF -eq 1 ]
+    then
+        /bin/sleep 10
+        echo "Image ready start VO"
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_vo.sh"
+    fi
+
+
+    if [ $START_UWB_VICON -eq 1 ]
+    then
+        echo "Start UWB VO"
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_uwb_vicon.sh"
+    fi
+
+    if [ $START_UWB_COMM -eq 1 ]
+    then
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_uwb_comm.sh"
+    fi
+
+    if [ $START_UWB_FUSE -eq 1 ]
+    then
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_uwb_fuse.sh"
+        sleep 1
+    fi
+
+
+    if [ $START_CONTROL -eq 1 ]
+    then
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_control.sh"
+    fi
+
+    if [ $START_SWARM_LOOP -eq 1 ]
+    then
+        echo "Will start swarm loop"
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_swarmloop.sh"
     fi
 
     if [ $RECORD_BAG -eq 1 ]
@@ -267,6 +343,6 @@ elif [ $RUN -eq 1 ]; then
 
     if [[ $? -gt 128 ]]
     then
-    kill $ROSCORE_PID
+        kill $ROSCORE_PID
     fi
 fi
