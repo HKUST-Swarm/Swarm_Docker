@@ -193,7 +193,6 @@ elif [ $RUN -eq 1 ]; then
             --rm \
             -e PID_FILE=$PID_FILE \
             -e LOG_PATH=$LOG_PATH \
-            #-e START_DJISDK=$START_DJISDK \
             -e START_VO_STUFF=$START_VO_STUFF \
             -e START_CAMERA=$START_CAMERA \
             -e CAM_TYPE=$CAM_TYPE \
