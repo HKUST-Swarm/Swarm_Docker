@@ -56,7 +56,9 @@ if [ $EDIT -eq 1 ]; then
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /home/dji/.ssh:/root/.ssh \
+            --name swarm \
             --rm \
+            -d \
             -it ${DOCKER_LOCAL_IMAGE} \
             /bin/bash
 
@@ -183,17 +185,39 @@ elif [ $RUN -eq 1 ]; then
         exit 0
     fi
 
+    tx2-docker run \
+            --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
+            -v /dev/ttyUSB0:/dev/ttyUSB0 \
+            -v /home/dji/.ssh:/root/.ssh \
+            -v /home/dji/swarm_log:/home/dji/swarm_log \
+            -v $PID_FILE:$PID_FILE \
+            --rm \
+            -e PID_FILE=$PID_FILE \
+            -e LOG_PATH=$LOG_PATH \
+            -e START_DJISDK=$START_DJISDK \
+            -e START_VO_STUFF=$START_VO_STUFF \
+            -e START_CAMERA=$START_CAMERA \
+            -e CAM_TYPE=$CAM_TYPE \
+            -e START_UWB_VICON=$START_UWB_VICON \
+            -e START_UWB_COMM=$START_UWB_COMM \
+            -e START_UWB_FUSE=$START_UWB_FUSE \
+            -e START_CONTROL=$START_CONTROL \
+            -e USE_VICON_CTRL=$USE_VICON_CTRL \
+            --name swarm \
+            -d \
+            -it ${DOCKER_LOCAL_IMAGE} \
+            /bin/bash &> $LOG_PATH/log_docker.txt &
+        echo "DOCKER RUN:"$!>>PID_FILE
+
     if [ $CONFIG_NETWORK -eq 1 ]; then
         /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
         echo "Wait 10 for network setup"
         /bin/sleep 1
     fi
 
-
     echo "Enabling chicken blood mode"
     sudo /usr/sbin/nvpmodel -m0
     sudo /home/dji/jetson_clocks.sh
-
 
 
     if [ $START_CAMERA -eq 1 ]
@@ -238,24 +262,6 @@ elif [ $RUN -eq 1 ]; then
     #    rosbag record -o /ssd/bags/fisheye_vins /dji_sdk_1/dji_sdk/imu /stereo/left/image_raw /stereo/right/image_raw /vins_estimator/odometry /vins_estimator/imu_propagate
     #fi
 
-
-    tx2-docker run \
-                -v /home/dji/swarm_log:/home/dji/swarm_log \
-                -v $PID_FILE:$PID_FILE \
-                --rm \
-                -e PID_FILE=$PID_FILE \
-                -e LOG_PATH=$LOG_PATH \
-                -e START_DJISDK=$START_DJISDK \
-                -e START_VO_STUFF=$START_VO_STUFF \
-                -e START_CAMERA=$START_CAMERA \
-                -e CAM_TYPE=$CAM_TYPE \
-                -e START_UWB_VICON=$START_UWB_VICON \
-                -e START_UWB_COMM=$START_UWB_COMM \
-                -e START_UWB_FUSE=$START_UWB_FUSE \
-                -e START_CONTROL=$START_CONTROL \
-                -e USE_VICON_CTRL=$USE_VICON_CTRL \
-                -it ${DOCKER_LOCAL_IMAGE} \
-                /bin/bash /root/catkin_ws/host_cmd.sh
 
     wait $ROSCORE_PID
 
