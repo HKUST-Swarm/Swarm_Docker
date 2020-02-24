@@ -188,10 +188,12 @@ elif [ $RUN -eq 1 ]; then
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyUSB0:/dev/ttyUSB0 \
+            -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /home/dji/.ssh:/root/.ssh \
             -v /home/dji/swarm_log:/home/dji/swarm_log \
             -v $PID_FILE:$PID_FILE \
             --rm \
+            -e DISPLAY=:0 \
             -e PID_FILE=$PID_FILE \
             -e LOG_PATH=$LOG_PATH \
             -e START_VO_STUFF=$START_VO_STUFF \
@@ -224,6 +226,7 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_DJISDK -eq 1 ]
     then
+        echo "dji_sdk start"
         tx2-docker exec -d swarm /ros_entrypoint.sh "./run_sdk.sh" &> $LOG_PATH/log_docker.txt
         sleep 5
     fi
@@ -288,6 +291,7 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_UWB_COMM -eq 1 ]
     then
+        echo "Start UWB COMM"
         tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh" &> $LOG_PATH/log_docker.txt
     fi
 
