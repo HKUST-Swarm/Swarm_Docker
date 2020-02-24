@@ -192,7 +192,6 @@ elif [ $RUN -eq 1 ]; then
             -v /home/dji/swarm_log:/home/dji/swarm_log \
             -v $PID_FILE:$PID_FILE \
             --rm \
-            -e DISPLAY=:0 \
             -e PID_FILE=$PID_FILE \
             -e LOG_PATH=$LOG_PATH \
             -e START_VO_STUFF=$START_VO_STUFF \
@@ -211,7 +210,7 @@ elif [ $RUN -eq 1 ]; then
             -d \
             -it ${DOCKER_LOCAL_IMAGE} \
             /bin/bash &> $LOG_PATH/log_docker.txt &
-        echo "DOCKER RUN:"$!>>PID_FILE
+        echo "DOCKER RUN:"$!>>$PID_FILE
 
     # if [ $CONFIG_NETWORK -eq 1 ]; then
     #     /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
