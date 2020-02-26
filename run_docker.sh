@@ -191,6 +191,8 @@ elif [ $RUN -eq 1 ]; then
         exit 0
     fi
 
+
+
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyUSB0:/dev/ttyUSB0 \
@@ -220,11 +222,13 @@ elif [ $RUN -eq 1 ]; then
             /bin/bash &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
-    # if [ $CONFIG_NETWORK -eq 1 ]; then
-    #     /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
-    #     echo "Wait 10 for network setup"
-    #     /bin/sleep 1
-    # fi
+    if [ $CONFIG_NETWORK -eq 1 ]
+    then
+        /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
+        echo "Wait 10 for network setup"
+        /bin/sleep 1
+    fi
+
 
     echo "Enabling chicken blood mode"
     sudo /usr/sbin/nvpmodel -m0
