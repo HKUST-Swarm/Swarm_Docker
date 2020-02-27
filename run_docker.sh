@@ -78,6 +78,7 @@ elif [ $RUN -eq 1 ]; then
 
 
     LOG_PATH=/home/dji/swarm_log/`date +%F_%T`
+    #LOG_PATH=/ssd/swarm_log/`date +%F_%T`
     CONFIG_PATH=/home/dji/SwarmConfig
 
     source $CONFIG_PATH/autostart_config.sh
@@ -192,7 +193,7 @@ elif [ $RUN -eq 1 ]; then
     fi
 
 
-
+    echo "PTGREY"$PTGREY_ID
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyUSB0:/dev/ttyUSB0 \
@@ -200,8 +201,15 @@ elif [ $RUN -eq 1 ]; then
             -v /home/dji/.ssh:/root/.ssh \
             -v /home/dji/swarm_log:/home/dji/swarm_log \
             -v $PID_FILE:$PID_FILE \
+            -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             --rm \
-            -e DISPLAY=:0 \
+            --user=$USER \
+            --env="DISPLAY" \
+            --volume="/etc/group:/etc/group:ro" \
+            --volume="/etc/passwd:/etc/passwd:ro" \
+            --volume="/etc/shadow:/etc/shadow:ro" \
+            --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+            --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             -e PID_FILE=$PID_FILE \
             -e LOG_PATH=$LOG_PATH \
             -e START_VO_STUFF=$START_VO_STUFF \
@@ -216,6 +224,7 @@ elif [ $RUN -eq 1 ]; then
             -e START_CAMERA_SYNC=$START_CAMERA_SYNC \
             -e START_SWARM_LOOP=$START_SWARM_LOOP \
             -e USE_DJI_IMU=$USE_DJI_IMU \
+            -e PTGREY_ID=$PTGREY_ID \
             --name swarm \
             -d \
             -it ${DOCKER_LOCAL_IMAGE} \
@@ -237,14 +246,15 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_sdk.sh" &> $LOG_PATH/log_docker.txt
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_sdk.sh"
         sleep 5
     fi
 
 
     if [ $START_SWARM_LOOP -eq 1 ]
     then
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_loop.sh" &> $LOG_PATH/log_docker.txt
+        echo "start loopserver"
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_loopserver.sh" 
         sleep 5
     fi
 
@@ -279,7 +289,7 @@ elif [ $RUN -eq 1 ]; then
             /bin/sleep 10
             echo "writing camera config"
             #/home/dji/SwarmAutoInstall/rs_write_cameraconfig.py
-            rosrun dynamic_reconfigure dynparam set /camera/stereo_module 'emitter_enabled' false
+            #rosrun dynamic_reconfigure dynparam set /camera/stereo_module 'emitter_enabled' false
         fi
     fi
 
@@ -289,38 +299,44 @@ elif [ $RUN -eq 1 ]; then
     then
         /bin/sleep 10
         echo "Image ready start VO"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh" &> $LOG_PATH/log_docker.txt
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh" 
     fi
 
 
     if [ $START_UWB_VICON -eq 1 ]
     then
         echo "Start UWB VO"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh" &> $LOG_PATH/log_docker.txt
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh" 
     fi
 
     if [ $START_UWB_COMM -eq 1 ]
     then
         echo "Start UWB COMM"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh" &> $LOG_PATH/log_docker.txt
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh" 
     fi
 
     if [ $START_UWB_FUSE -eq 1 ]
     then
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh" &> $LOG_PATH/log_docker.txt
-        sleep 1
+        echo "start ptgrey"
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_ptgrey.sh" 
+    fi
+    if [ $START_UWB_FUSE -eq 1 ]
+    then
+        echo "Start UWB fuse"
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh" 
     fi
 
 
     if [ $START_CONTROL -eq 1 ]
     then
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh" &> $LOG_PATH/log_docker.txt
+        echo "Start CONTROL    "
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh"
     fi
 
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "Will start swarm loop"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh" &> $LOG_PATH/log_docker.txt
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh" 
     fi
 
     if [ $RECORD_BAG -eq 1 ]
@@ -336,22 +352,23 @@ elif [ $RUN -eq 1 ]; then
         echo "rosbag:"$! >> $PID_FILE
 
     fi
-
     if [ $RECORD_BAG -eq 2 ]
     then
-        rosbag record -o $LOG_PATH/swarm_source_log.bag /vins_estimator/imu_propagate /vins_estimator/odometry /swarm_drones/swarm_drone_source_data
+        rosbag record -o /ssd/bags/swarm_vicon_bags/swarm_source_log.bag /swarm_drones/swarm_frame /swarm_drones/swarm_frame_predict /vins_estimator/imu_propagate /vins_estimator/odometry &
     fi
 
     if [ $RECORD_BAG -eq 3 ]
     then
-        rosbag record -o $LOOP_LOG_PATH/swarm_loodp_log.bag /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /dji_sdk_1/dji_sdk/imu
+        rosbag record -o /ssd/bags/swarm_loop.bag /dji_sdk_1/dji_sdk/imu /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/depth/image_rect_raw /swarm_loop/remote_image_desc /uwb_node/time_ref /uwb_node/remote_nodes  /uwb_node/incoming_broadcast_data &
+        echo "rosbag:"$! >> $PID_FILE
     fi
 
-    #if [ $RECORD_BAG -eq 4 ]
-    #then
-    #    rosbag record -o /ssd/bags/fisheye_vins /dji_sdk_1/dji_sdk/imu /stereo/left/image_raw /stereo/right/image_raw /vins_estimator/odometry /vins_estimator/imu_propagate
-    #fi
 
+    if [ $RECORD_BAG -eq 4 ]
+    then
+        rosbag record -o /ssd/bags/swarm_loop /swarm_drones/swarm_frame /swarm_drones/swarm_frame_predict /swarm_loop/loop_connection
+        echo "rosbag:"$! >> $PID_FILE
+    fi
 
     wait $ROSCORE_PID
 
