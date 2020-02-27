@@ -2,7 +2,7 @@
 trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
-DOCKER_IMAGE=192.168.1.204:5000/swarm_push:latest
+DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
 DOCKER_LOCAL_IMAGE=xyaoab/swarmuav:latest
 #print help
 function echoUsage()
@@ -254,7 +254,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "start loopserver"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_loopserver.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_loopserver.sh"
         sleep 5
     fi
 
@@ -299,31 +299,31 @@ elif [ $RUN -eq 1 ]; then
     then
         /bin/sleep 10
         echo "Image ready start VO"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh"
     fi
 
 
     if [ $START_UWB_VICON -eq 1 ]
     then
         echo "Start UWB VO"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh"
     fi
 
     if [ $START_UWB_COMM -eq 1 ]
     then
         echo "Start UWB COMM"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh"
     fi
 
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "start ptgrey"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_ptgrey.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_ptgrey.sh"
     fi
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "Start UWB fuse"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh"
     fi
 
 
@@ -336,7 +336,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "Will start swarm loop"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh" 
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh"
     fi
 
     if [ $RECORD_BAG -eq 1 ]
