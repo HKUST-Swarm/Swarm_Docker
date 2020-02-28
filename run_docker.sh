@@ -101,6 +101,7 @@ elif [ $RUN -eq 1 ]; then
         echo "Start ros core"
         roscore &> $LOG_PATH/log_roscore.txt &
         echo "roscore:"$! >> $PID_FILE
+        ROSCORE_PID = $!
         #/bin/sleep 5 wait for core
         /bin/sleep 5
 
@@ -376,6 +377,8 @@ elif [ $RUN -eq 1 ]; then
         rosbag record -o /ssd/bags/swarm_loop /swarm_drones/swarm_frame /swarm_drones/swarm_frame_predict /swarm_loop/loop_connection
         echo "rosbag:"$! >> $PID_FILE
     fi
+
+    echo "DOCKER START OK; Waiting for ROSCORE SHUTDOWN"
 
     wait $ROSCORE_PID
 
