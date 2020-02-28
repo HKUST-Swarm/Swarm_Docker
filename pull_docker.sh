@@ -23,6 +23,7 @@ fi
 #        do echo "Ping Fail - `date`"
 while ! sudo /sbin/ethtool eth0 | grep -q "Link detected: yes"
     do echo "No connection"
+        /bin/sleep 5
 done
 echo "`date`--Start pulling docker image"
 if [ $SERVER -eq 1 ]
