@@ -94,6 +94,7 @@ elif [ $RUN -eq 1 ]; then
         sudo chmod a+rw $LOG_PATH
         sudo rm /home/dji/swarm_log_lastest
         ln -s $LOG_PATH /home/dji/swarm_log_lastest
+        sudo ln -s /root/.ros/log/latest $LOG_PATH
 
         PID_FILE=/home/dji/swarm_log_lastest/pids.txt
         touch $PID_FILE
@@ -200,6 +201,7 @@ elif [ $RUN -eq 1 ]; then
             -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /home/dji/.ssh:/root/.ssh \
             -v /home/dji/swarm_log:/home/dji/swarm_log \
+            -v /root/.ros/log/latest:/root/.ros/log/latest \
             -v $PID_FILE:$PID_FILE \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             --rm \
@@ -323,7 +325,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "Start swarm detector"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarm_detector.sh"
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarm_detection.sh"
     fi
     if [ $START_UWB_FUSE -eq 1 ]
     then
