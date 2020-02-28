@@ -322,6 +322,11 @@ elif [ $RUN -eq 1 ]; then
     fi
     if [ $START_UWB_FUSE -eq 1 ]
     then
+        echo "Start swarm detector"
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarm_detector.sh"
+    fi
+    if [ $START_UWB_FUSE -eq 1 ]
+    then
         echo "Start UWB fuse"
         tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh"
     fi
@@ -329,7 +334,7 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_CONTROL -eq 1 ]
     then
-        echo "Start CONTROL    "
+        echo "Start CONTROL"
         tx2-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh"
     fi
 
