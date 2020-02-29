@@ -101,7 +101,6 @@ elif [ $RUN -eq 1 ]; then
         echo "Start ros core"
         roscore &> $LOG_PATH/log_roscore.txt &
         echo "roscore:"$! >> $PID_FILE
-        ROSCORE_PID = $!
         #/bin/sleep 5 wait for core
         /bin/sleep 5
 
@@ -315,7 +314,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_UWB_COMM -eq 1 ]
     then
         echo "Start UWB COMM"
-        roslaunch inf_uwb_node uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
+        roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
         echo "UWB NODE:"$! >> $PID_FILE
         tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh"
     fi
