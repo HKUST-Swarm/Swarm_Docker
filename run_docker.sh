@@ -229,7 +229,7 @@ elif [ $RUN -eq 1 ]; then
             -e PTGREY_ID=$PTGREY_ID \
             --name swarm \
             -d \
-            -it ${DOCKER_LOCAL_IMAGE} \
+            -it ${DOCKER_IMAGE} \
             /bin/bash &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
