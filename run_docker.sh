@@ -379,12 +379,12 @@ elif [ $RUN -eq 1 ]; then
         echo "rosbag:"$! >> $PID_FILE
     fi
 
-    echo "DOCKER START OK; Waiting for ROSCORE SHUTDOWN"
+    echo "DOCKER START OK;"
 
-    wait $ROSCORE_PID
+    #wait $ROSCORE_PID
 
-    if [[ $? -gt 128 ]]
-    then
-        kill $ROSCORE_PID
-    fi
+    #if [[ $? -gt 128 ]]
+    #then
+    #    kill $ROSCORE_PID
+    #fi
 fi
