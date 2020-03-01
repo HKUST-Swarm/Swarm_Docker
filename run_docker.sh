@@ -100,7 +100,7 @@ elif [ $RUN -eq 1 ]; then
         then
             /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
             echo "Wait 10 for network setup"
-            /bin/sleep 1
+            /bin/sleep 10
         fi
 
         /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
