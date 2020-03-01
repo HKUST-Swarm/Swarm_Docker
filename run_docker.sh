@@ -65,7 +65,7 @@ if [ $EDIT -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
             --rm \
-            -it ${DOCKER_LOCAL_IMAGE} \
+            -it ${DOCKER_IMAGE} \
             /bin/bash
 
 elif [ $RUN -eq 1 ]; then
@@ -103,7 +103,7 @@ elif [ $RUN -eq 1 ]; then
             /bin/sleep 1
         fi
 
-        /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1 
+        /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
         echo "Pull docker start"
 
         PID_FILE=/home/dji/swarm_log_lastest/pids.txt
@@ -203,11 +203,9 @@ elif [ $RUN -eq 1 ]; then
         exit 0
     fi
 
-
     echo "PTGREY"$PTGREY_ID
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
-            -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /home/dji/.ssh:/root/.ssh \
             -v /home/dji/swarm_log:/home/dji/swarm_log \
@@ -236,6 +234,7 @@ elif [ $RUN -eq 1 ]; then
             -e START_CAMERA_SYNC=$START_CAMERA_SYNC \
             -e START_SWARM_LOOP=$START_SWARM_LOOP \
             -e USE_DJI_IMU=$USE_DJI_IMU \
+            -e NODE_ID=$NODE_ID \
             -e PTGREY_ID=$PTGREY_ID \
             --name swarm \
             -d \
@@ -250,10 +249,12 @@ elif [ $RUN -eq 1 ]; then
     sudo /usr/sbin/nvpmodel -m0
     sudo /home/dji/jetson_clocks.sh
 
+    sleep 5
+
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_sdk.sh"
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh"
         sleep 5
     fi
 

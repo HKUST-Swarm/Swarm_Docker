@@ -4,7 +4,7 @@
 export LANG=C
 
 HOSTNAME=8.8.8.8
-ID=4
+source /home/dji/SwarmConfig/autostart_config.sh
 REMOTE_IMAGE=xyaoab/swarmuav:latest
 SERVER_IMAGE=192.168.1.204:5000/swarm:latest
 SERVER=1
@@ -30,19 +30,19 @@ then
 echo "`date`--Start pulling docker image" 
     if [ $SERVER -eq 1 ]
     then
-        wget http://i7/pull_$ID
+        curl http://192.168.1.204/pull/$NODE_ID &
     fi
 
     if docker pull $IMAGE | grep "Image is up to date";then
 	    if [ $SERVER -eq 1 ]
         then
-            wget http://i7/ok_$ID
+            curl http://192.168.1.204/ok/$NODE_ID &
         fi
-        echo "up to date" >>/home/dji/log.txt
+        echo "up to date" 
     else
 	    if [ $SERVER -eq 1 ]
         then
-            wget http://i7/pull_ok_$ID
+            curl http://192.168.1.204/pull_ok/$NODE_ID &
         fi
         echo "pulling new image"
     fi
