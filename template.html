@@ -1,0 +1,15 @@
+<html>
+   <head>
+        <meta http-equiv="refresh" content="3" >
+        <title>{{ title }}</title>
+   </head>
+   <body>
+     <ul>
+       {% for _id, in db.get_drones() %}
+         <li>{{ db.print_info(_id) }}</li>
+       {% end %}
+     </ul>
+    Update on {{ db.time_now() }} <br />
+    Last firwmare is created by {{db.last_push_id}} Image: {{db.last_image}} on time {{ db.push_ago() }} s ago
+   </body>
+ </html>
