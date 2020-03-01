@@ -234,6 +234,7 @@ elif [ $RUN -eq 1 ]; then
             -e START_CAMERA_SYNC=$START_CAMERA_SYNC \
             -e START_SWARM_LOOP=$START_SWARM_LOOP \
             -e USE_DJI_IMU=$USE_DJI_IMU \
+            -e NODE_ID=$NODE_ID \
             -e PTGREY_ID=$PTGREY_ID \
             --name swarm \
             -d \
