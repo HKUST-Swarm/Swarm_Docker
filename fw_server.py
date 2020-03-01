@@ -3,6 +3,7 @@ import tornado.web
 from datetime import datetime
 import time
 import math
+import pickle
 
 # pull: connection ready, start pulling 
 # ok: not pull new, uses local
@@ -45,16 +46,19 @@ class SwarmFirmwareDatabase:
         self.check_drone_exist(drone_id)
         print("Node {} pulling".format(drone_id))
         self.drones[drone_id].set_pulling()
+        dump_db(self)
 
     def set_ok_id(self, drone_id):
         self.check_drone_exist(drone_id)
         print("Node {} up-to-date".format(drone_id))
         self.drones[drone_id].set_uptodate()
+        dump_db(self)
 
     def set_pull_ok(self, drone_id):
         self.check_drone_exist(drone_id)
         print("Node {} pull OK".format(drone_id))
         self.drones[drone_id].set_pulling_OK()
+        dump_db(self)
     
     def get_drones(self):
         return self.drones
@@ -64,11 +68,15 @@ class SwarmFirmwareDatabase:
     
     def push_ago(self):
         return math.floor(time.time() - self.last_pushtime)
+    
+    def print_info(self, _id):
+        return self.drones[_id].print_info() + " Is lastest:{}".format( self.drones[_id].last_update > self.last_pushtime)
 
     def push(self, id, image):
         self.last_push_id = id
         self.last_image = image
         self.last_pushtime = time.time()
+        dump_db(self)
 
 class PullHandler(tornado.web.RequestHandler):
     def initialize(self, db):
@@ -99,7 +107,7 @@ class PushHandler(tornado.web.RequestHandler):
         self.db = db
     def get(self, _id, image):
         self.db.push(_id, image)
-        self.write("PUSH OK")
+        self.write("{} PUSH IMAGE {}".format(_id, image))
 
 class MainHandler(tornado.web.RequestHandler):
     def initialize(self, db):
@@ -108,9 +116,21 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("template.html", title="Drone Firmware", db=self.db)
 
+DB_PATH = "/home/dji/fw.db"
+def dump_db(db):
+    global DB_PATH
+    print("Update DB", DB_PATH)
+    pickle.dump(db, open(DB_PATH, "wb"))
 
 if __name__ == "__main__":
-    db = SwarmFirmwareDatabase()
+    try:
+        db = pickle.load(open(DB_PATH, "rb"))
+        print("Successful load db from file")
+    except:
+        print("Local db failed, will create")
+        db = SwarmFirmwareDatabase()
+        dump_db(db)
+
     port = 8888
     app = tornado.web.Application([
     (r"/pull/([0-9]+)", PullHandler, dict(db=db)),

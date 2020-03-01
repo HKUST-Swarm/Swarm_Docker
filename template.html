@@ -6,7 +6,7 @@
    <body>
      <ul>
        {% for _id, in db.get_drones() %}
-         <li>{{ db.drones[_id].print_info() }}</li>
+         <li>{{ db.print_info(_id) }}</li>
        {% end %}
      </ul>
     Update on {{ db.time_now() }} <br />
