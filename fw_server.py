@@ -76,6 +76,7 @@ class SwarmFirmwareDatabase:
         self.last_push_id = id
         self.last_image = image
         self.last_pushtime = time.time()
+        self.set_ok_id(id)
         dump_db(self)
 
 class PullHandler(tornado.web.RequestHandler):
