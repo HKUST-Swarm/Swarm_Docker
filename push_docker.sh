@@ -1,4 +1,5 @@
 #!/bin/bash
+source $CONFIG_PATH/autostart_config.sh
 REMOTE_IMAGE=xyaoab/swarmuav:latest
 SERVER_IMAGE=192.168.1.204:5000/swarm:latest
 if [ "$#" -eq 0 ];then
@@ -9,5 +10,6 @@ else
     echo "Commit&Push to remote hub as"${REMOTE_IMAGE}
     docker commit swarm ${REMOTE_IMAGE}
     docker push ${REMOTE_IMAGE}
+    wget 
 fi
 

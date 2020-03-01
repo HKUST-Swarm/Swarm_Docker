@@ -203,7 +203,6 @@ elif [ $RUN -eq 1 ]; then
         exit 0
     fi
 
-
     echo "PTGREY"$PTGREY_ID
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
@@ -249,10 +248,12 @@ elif [ $RUN -eq 1 ]; then
     sudo /usr/sbin/nvpmodel -m0
     sudo /home/dji/jetson_clocks.sh
 
+    sleep 5
+
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_sdk.sh"
+        tx2-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh"
         sleep 5
     fi
 
