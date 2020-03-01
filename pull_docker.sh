@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'
+#sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'
 #echo "input is: $1"
 export LANG=C
 
@@ -21,26 +21,31 @@ fi
 #echo $?
 #while  ping -c1 {$HOSTNAME} &>/dev/null
 #        do echo "Ping Fail - `date`"
-while ! sudo /sbin/ethtool eth0 | grep -q "Link detected: yes"
-    do echo "No connection"
-        /bin/sleep 5
-done
-echo "`date`--Start pulling docker image"
-if [ $SERVER -eq 1 ]
+#while ! sudo /sbin/ethtool eth0 | grep -q "Link detected: yes"
+#    do echo "No connection"
+#        /bin/sleep 5
+#done
+if ping -c1 8.8.8.8 &>/dev/null
 then
-    wget http://i7/pull_$ID
-fi
+sudo sh -c 'echo "`date`--Start pulling docker image" >/home/dji/log.txt'
+    if [ $SERVER -eq 1 ]
+    then
+        wget http://i7/pull_$ID
+    fi
 
-if docker pull $IMAGE | grep "Image is up to date";then
-	if [ $SERVER -eq 1 ]
-    then
-        wget http://i7/ok_$ID
+    if docker pull $IMAGE | grep "Image is up to date";then
+	    if [ $SERVER -eq 1 ]
+        then
+            wget http://i7/ok_$ID
+        fi
+       sudo sh -c 'echo "up to date" >/home/dji/log.txt'
+    else
+	    if [ $SERVER -eq 1 ]
+        then
+            wget http://i7/pull_ok_$ID
+        fi
+        sudo sh -c 'echo "pulling new image" >/home/dji/log.txt'
     fi
-    echo "up to date"
 else
-	if [ $SERVER -eq 1 ]
-    then
-        wget http://i7/pull_ok_$ID
-    fi
-    echo "pulling new image"
+    sudo sh -c 'echo "Use local copy" >/home/dji/log.txt'
 fi
