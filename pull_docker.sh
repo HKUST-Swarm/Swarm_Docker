@@ -27,7 +27,7 @@ fi
 #done
 if ping -c1 8.8.8.8 &>/dev/null
 then
-sudo sh -c 'echo "`date`--Start pulling docker image" >>/home/dji/log.txt'
+echo "`date`--Start pulling docker image" 
     if [ $SERVER -eq 1 ]
     then
         wget http://i7/pull_$ID
@@ -38,14 +38,14 @@ sudo sh -c 'echo "`date`--Start pulling docker image" >>/home/dji/log.txt'
         then
             wget http://i7/ok_$ID
         fi
-       sudo sh -c 'echo "up to date" >>/home/dji/log.txt'
+        echo "up to date" >>/home/dji/log.txt
     else
 	    if [ $SERVER -eq 1 ]
         then
             wget http://i7/pull_ok_$ID
         fi
-        sudo sh -c 'echo "pulling new image" >>/home/dji/log.txt'
+        echo "pulling new image"
     fi
 else
-    sudo sh -c 'echo "Use local copy" >>/home/dji/log.txt'
+    echo "Use local copy"
 fi

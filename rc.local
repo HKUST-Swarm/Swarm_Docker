@@ -10,8 +10,8 @@
 # bits.
 #
 # By default this script does nothing.
-echo "pull imagestart" >> /home/dji/log.txt
-/bin/bash /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 
+#echo "pull imagestart" >> /home/dji/log.txt
+#/bin/bash /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 
 echo "start swarmstart" >> /home/dji/log.txt
 #/bin/bash /home/dji/SwarmAutoInstall/swarm_startup.sh  >> /home/dji/log.txt &
 /bin/bash /home/dji/Swarm_Docker/run_docker.sh -r >>/home/dji/log.txt &

@@ -96,6 +96,16 @@ elif [ $RUN -eq 1 ]; then
         ln -s $LOG_PATH /home/dji/swarm_log_lastest
         sudo ln -s /root/.ros/log/latest $LOG_PATH
 
+        if [ $CONFIG_NETWORK -eq 1 ]
+        then
+            /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
+            echo "Wait 10 for network setup"
+            /bin/sleep 1
+        fi
+
+        /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1 
+        echo "Pull docker start"
+
         PID_FILE=/home/dji/swarm_log_lastest/pids.txt
         touch $PID_FILE
         echo "Start ros core"
@@ -233,12 +243,7 @@ elif [ $RUN -eq 1 ]; then
             /bin/bash &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
-    if [ $CONFIG_NETWORK -eq 1 ]
-    then
-        /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
-        echo "Wait 10 for network setup"
-        /bin/sleep 1
-    fi
+
 
 
     echo "Enabling chicken blood mode"
