@@ -30,19 +30,19 @@ then
 echo "`date`--Start pulling docker image" 
     if [ $SERVER -eq 1 ]
     then
-        wget http://192.168.1.204:8888/pull/$NODE_ID &
+        curl http://192.168.1.204/pull/$NODE_ID &
     fi
 
     if docker pull $IMAGE | grep "Image is up to date";then
 	    if [ $SERVER -eq 1 ]
         then
-            wget http://192.168.1.204:8888/ok/$NODE_ID &
+            curl http://192.168.1.204/ok/$NODE_ID &
         fi
         echo "up to date" 
     else
 	    if [ $SERVER -eq 1 ]
         then
-            wget http://192.168.1.204:8888/pull_ok/$NODE_ID &
+            curl http://192.168.1.204/pull_ok/$NODE_ID &
         fi
         echo "pulling new image"
     fi
