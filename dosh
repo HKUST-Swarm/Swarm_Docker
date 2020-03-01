@@ -1,3 +1,2 @@
 #!/bin/bash
-tx2-docker exec -it swarm /bin/bash
-
+tx2-docker exec -it swarm /bin/zsh
