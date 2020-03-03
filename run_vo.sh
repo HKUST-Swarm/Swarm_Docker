@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 if [ $CAM_TYPE -eq 0 ]
 then
-    echo "No ptgrey VINS imple yet"
+    rosrun vins vins_node /home/dji/SwarmConfig/fisheye_ptgrey_n3/fisheye.yaml &> $LOG_PATH/log_vo.txt &
+    echo "VINS:"$! >> $PID_FILE
+    /bin/sleep 1.0
     #roslaunch vins nodelet_realsense_full.launch &> $LOG_PATH/log_vo.txt &
 fi
 
