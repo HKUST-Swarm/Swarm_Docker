@@ -66,7 +66,7 @@ if [ $EDIT -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
             --rm \
-            -it ${DOCKER_FISHEYE_IMAGE} \
+            -it ${DOCKER_IMAGE}
             /bin/zsh
 
 elif [ $RUN -eq 1 ]; then
@@ -241,7 +241,7 @@ elif [ $RUN -eq 1 ]; then
             -e DOWN_ID=$DOWN_ID \
             --name swarm \
             -d \
-            -it ${DOCKER_IMAGE} \
+            -it ${DOCKER_FISHEYE_IMAGE} \
             /bin/zsh &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
