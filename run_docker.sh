@@ -2,8 +2,9 @@
 trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
-#DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
-DOCKER_IMAGE=f2ae82d09940
+
+DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
+DOCKER_FISHEYE_IMAGE=192.168.1.204:5000/swarm:fisheye
 DOCKER_LOCAL_IMAGE=xyaoab/swarmuav:latest
 #print help
 function echoUsage()
@@ -55,7 +56,6 @@ done
 if [ $EDIT -eq 1 ]; then
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
-            -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /home/dji/.ssh:/root/.ssh \
             --user=$USER \
             --env="DISPLAY" \
@@ -66,8 +66,8 @@ if [ $EDIT -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
             --rm \
-            -it ${DOCKER_IMAGE} \
-            /bin/bash
+            -it ${DOCKER_FISHEYE_IMAGE} \
+            /bin/zsh
 
 elif [ $RUN -eq 1 ]; then
 
@@ -101,7 +101,7 @@ elif [ $RUN -eq 1 ]; then
         then
             /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
             echo "Wait 10 for network setup"
-            /bin/sleep 1
+            /bin/sleep 10
         fi
 
         /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
@@ -235,6 +235,7 @@ elif [ $RUN -eq 1 ]; then
             -e START_CAMERA_SYNC=$START_CAMERA_SYNC \
             -e START_SWARM_LOOP=$START_SWARM_LOOP \
             -e USE_DJI_IMU=$USE_DJI_IMU \
+            -e NODE_ID=$NODE_ID \
             -e PTGREY_ID=$PTGREY_ID \
             --name swarm \
             -d \
@@ -270,23 +271,28 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_CAMERA -eq 1 ]
     then
         echo "Trying to start camera driver"
-        # if [ $CAM_TYPE -eq 0 ]
-        # then
-        # echo "Will use pointgrey Camera"
-        # echo "Start Camera in unsync mode"
-        # #roslaunch swarm_vo_fuse stereo.launch is_sync:=false config_path:=$CONFIG_PATH/camera_config.yaml &> $LOG_PATH/log_camera.txt &
-        # PG_PID=$!
-        # echo "PTGREY_UNSYNC:"$! >> $PID_FILE
-        #     if [ $START_CAMERA_SYNC -eq 1 ]
-        #     then
-        #         /bin/sleep 5
-        #         sudo kill -- $PG_PID
-        #         echo "Start camera in sync mode"
-        #         /bin/sleep 1.0
-        #         #roslaunch swarm_vo_fuse stereo.launch is_sync:=true config_path:=$CONFIG_PATH/camera_config.yaml &>> $LOG_PATH/log_camera.txt &
-        #         echo "PTGREY_SYNC:"$! >> $PID_FILE
-        #     fi
-        # fi
+        if [ $CAM_TYPE -eq 0 ]
+        then
+            echo "Will use pointgrey Camera"
+            echo "Start Camera in unsync mode"
+            roslaunch ptgrey_reader stereo.launch is_sync:=false  &> $LOG_PATH/log_camera.txt &
+            PG_PID=$!
+            echo "PTGREY_UNSYNC:"$! >> $PID_FILE
+            if [ $START_CAMERA_SYNC -eq 1 ]
+            then
+                /bin/sleep 25
+                rosservice call /dji_sdk_1/dji_sdk/set_hardsyc 20 0 &> $LOG_PATH/log_camera.txt &
+                /bin/sleep 5
+                sudo kill -- $PG_PID
+                roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
+
+                rosrun vins vins_node /home/dji/SwarmConfig/fisheye_ptgrey_n3/fisheye.yaml &> $LOG_PATH/log_vo.txt &
+                echo "Start camera in sync mode"
+                /bin/sleep 1.0
+                #roslaunch swarm_vo_fuse stereo.launch is_sync:=true config_path:=$CONFIG_PATH/camera_config.yaml &>> $LOG_PATH/log_camera.txt &
+                echo "PTGREY_SYNC:"$! >> $PID_FILE
+            fi
+        fi
 
         if [ $CAM_TYPE -eq 3 ]
         then
