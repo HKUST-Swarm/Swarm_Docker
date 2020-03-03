@@ -2,7 +2,8 @@
 trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
-DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
+#DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
+DOCKER_IMAGE=f2ae82d09940
 DOCKER_LOCAL_IMAGE=xyaoab/swarmuav:latest
 #print help
 function echoUsage()
