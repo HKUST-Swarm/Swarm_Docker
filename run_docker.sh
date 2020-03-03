@@ -3,6 +3,7 @@ trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
+DOCKER_FISHEYE_IMAGE=192.168.1.204:5000/swarm:fisheye
 DOCKER_LOCAL_IMAGE=xyaoab/swarmuav:latest
 #print help
 function echoUsage()
@@ -54,7 +55,6 @@ done
 if [ $EDIT -eq 1 ]; then
     tx2-docker run \
             --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
-            -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /home/dji/.ssh:/root/.ssh \
             --user=$USER \
             --env="DISPLAY" \
@@ -65,8 +65,8 @@ if [ $EDIT -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
             --rm \
-            -it ${DOCKER_IMAGE} \
-            /bin/bash
+            -it ${DOCKER_FISHEYE_IMAGE} \
+            /bin/zsh
 
 elif [ $RUN -eq 1 ]; then
 
