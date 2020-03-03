@@ -104,7 +104,7 @@ elif [ $RUN -eq 1 ]; then
             /bin/sleep 10
         fi
 
-        /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
+        /home/dji/Swarm_Docker/pull_docker_fisheye.sh >> /home/dji/log.txt 2>&1
         echo "Pull docker start"
 
         PID_FILE=/home/dji/swarm_log_lastest/pids.txt
@@ -237,10 +237,12 @@ elif [ $RUN -eq 1 ]; then
             -e USE_DJI_IMU=$USE_DJI_IMU \
             -e NODE_ID=$NODE_ID \
             -e PTGREY_ID=$PTGREY_ID \
+            -e UP_ID=$UP_ID \
+            -e DOWN_ID=$DOWN_ID \
             --name swarm \
             -d \
             -it ${DOCKER_IMAGE} \
-            /bin/bash &> $LOG_PATH/log_docker.txt &
+            /bin/zsh &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
 
