@@ -66,7 +66,7 @@ if [ $EDIT -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
             --rm \
-            -it ${DOCKER_IMAGE}
+            -it ${DOCKER_FISHEYE_IMAGE} \
             /bin/zsh
 
 elif [ $RUN -eq 1 ]; then
@@ -269,6 +269,11 @@ elif [ $RUN -eq 1 ]; then
         sleep 5
     fi
 
+    if [ $START_PLAN -eq 1 ]
+    then
+        echo "start planner"
+        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_plan.sh"
+    fi
 
     if [ $START_CAMERA -eq 1 ]
     then
