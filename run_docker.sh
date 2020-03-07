@@ -245,7 +245,8 @@ elif [ $RUN -eq 1 ]; then
             /bin/zsh &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
-
+    roslaunch rosbridge_server rosbridge_websocket.launch &> $LOG_PATH/log_rosbridge.txt &
+    echo "rosbridge:"$! >> $PID_FILE
 
 
     echo "Enabling chicken blood mode"
