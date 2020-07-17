@@ -5,7 +5,7 @@
    </head>
    <body>
      <ul>
-       {% for _id, in db.get_drones() %}
+       {% for _id in db.get_drones() %}
          <li>{{ db.print_info(_id) }}</li>
        {% end %}
      </ul>
