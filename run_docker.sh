@@ -3,9 +3,8 @@ trap : SIGTERM SIGINT
 
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 
-DOCKER_IMAGE=192.168.1.204:5000/swarm:latest
-DOCKER_FISHEYE_IMAGE=192.168.1.204:5000/swarm:fisheye
-DOCKER_LOCAL_IMAGE=xyaoab/swarmuav:latest
+source /home/dji/Swarm_Docker/image_config.sh
+
 #print help
 function echoUsage()
 {
@@ -42,7 +41,7 @@ while getopts "ehrdpu" opt; do
         p)  docker pull ${DOCKER_IMAGE}
             exit 0
             ;;
-        u) docker push swarmuav:latest ${DOCKER_IMAGE}
+        u) docker push xuhao1/swarm2020 ${DOCKER_IMAGE}
             exit 0
             ;;
         *)
@@ -54,9 +53,12 @@ done
  #-v /dev:/dev \
             #--privileged \
 if [ $EDIT -eq 1 ]; then
-    tx2-docker run \
-            --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
+    nvidia-docker run \
+            -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /home/dji/.ssh:/root/.ssh \
+            -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
+            -v /home/dji/SwarmConfig:/root/SwarmConfig \
+            -v /ssd:/ssd \
             --user=$USER \
             --env="DISPLAY" \
             --volume="/etc/group:/etc/group:ro" \
@@ -66,7 +68,7 @@ if [ $EDIT -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
             --rm \
-            -it ${DOCKER_FISHEYE_IMAGE} \
+            -it ${DOCKER_IMAGE} \
             /bin/zsh
 
 elif [ $RUN -eq 1 ]; then
@@ -104,7 +106,7 @@ elif [ $RUN -eq 1 ]; then
             /bin/sleep 10
         fi
 
-        /home/dji/Swarm_Docker/pull_docker_fisheye.sh >> /home/dji/log.txt 2>&1
+        /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
         echo "Pull docker start"
 
         PID_FILE=/home/dji/swarm_log_lastest/pids.txt
@@ -205,12 +207,13 @@ elif [ $RUN -eq 1 ]; then
     fi
 
     echo "PTGREY"$PTGREY_ID
-    tx2-docker run \
-            --privileged -v /dev/ttyPTGREY:/dev/ttyPTGREY \
+    nvidia-docker run \
+            -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /home/dji/.ssh:/root/.ssh \
             -v /home/dji/swarm_log:/home/dji/swarm_log \
             -v /root/.ros/log/latest:/root/.ros/log/latest \
+            -v /ssd:/ssd \
             -v $PID_FILE:$PID_FILE \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             --rm \
@@ -241,7 +244,7 @@ elif [ $RUN -eq 1 ]; then
             -e DOWN_ID=$DOWN_ID \
             --name swarm \
             -d \
-            -it ${DOCKER_FISHEYE_IMAGE} \
+            -it ${DOCKER_IMAGE} \
             /bin/zsh &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
@@ -258,7 +261,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        tx2-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh"
+        nvidia-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh"
         sleep 5
     fi
 
@@ -266,14 +269,14 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "start loopserver"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_loopserver.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_loopserver.sh"
         sleep 5
     fi
 
     if [ $START_PLAN -eq 1 ]
     then
         echo "start planner"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_plan.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_plan.sh"
     fi
 
     if [ $START_CAMERA -eq 1 ]
@@ -282,7 +285,7 @@ elif [ $RUN -eq 1 ]; then
         if [ $CAM_TYPE -eq 0 ]
         then
             echo "Will use pointgrey Camera"
-            tx2-docker exec -d swarm /ros_entrypoint.sh "./run_stereo.sh"
+            nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_stereo.sh"
         fi
 
         if [ $CAM_TYPE -eq 3 ]
@@ -304,14 +307,14 @@ elif [ $RUN -eq 1 ]; then
     then
         /bin/sleep 10
         echo "Image ready start VO"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh"
     fi
 
 
     if [ $START_UWB_VICON -eq 1 ]
     then
         echo "Start UWB VO"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh"
     fi
 
     if [ $START_UWB_COMM -eq 1 ]
@@ -319,36 +322,36 @@ elif [ $RUN -eq 1 ]; then
         echo "Start UWB COMM"
         roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
         echo "UWB NODE:"$! >> $PID_FILE
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh"
     fi
 
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "start ptgrey"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_ptgrey.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_ptgrey.sh"
     fi
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "Start swarm detector"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarm_detection.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_swarm_detection.sh"
     fi
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "Start UWB fuse"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh"
     fi
 
 
     if [ $START_CONTROL -eq 1 ]
     then
         echo "Start CONTROL"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh"
     fi
 
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "Will start swarm loop"
-        tx2-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh"
     fi
 
     if [ $RECORD_BAG -eq 1 ]
@@ -383,11 +386,4 @@ elif [ $RUN -eq 1 ]; then
     fi
 
     echo "DOCKER START OK;"
-
-    #wait $ROSCORE_PID
-
-    #if [[ $? -gt 128 ]]
-    #then
-    #    kill $ROSCORE_PID
-    #fi
 fi
