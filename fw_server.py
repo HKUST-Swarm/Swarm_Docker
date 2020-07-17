@@ -5,25 +5,25 @@ import time
 import math
 import pickle
 
-# pull: connection ready, start pulling 
+# pull: connection ready, start pulling
 # ok: not pull new, uses local
 # pullok: pull new done
 class DroneStatus:
     def __init__(self, _id):
         self.id = _id
-        self.last_update = time.time() 
+        self.last_update = time.time()
         self.status = "NULL"
-    
+
     def set_pulling(self):
         self.status = "PULLING"
 
     def set_pulling_OK(self):
         self.status = "OK"
-        self.last_update =time.time() 
+        self.last_update =time.time()
 
     def set_uptodate(self):
         self.status = "OK"
-        self.last_update = time.time() 
+        self.last_update = time.time()
 
     def print_info(self):
         return "Node {} Status {} Last Update: {:4.1f}s ago".format(
@@ -33,7 +33,7 @@ class DroneStatus:
 
 class SwarmFirmwareDatabase:
     def __init__(self):
-        self.drones = {} # [DroneStatus(i) for i in range(10)] 
+        self.drones = {} # [DroneStatus(i) for i in range(10)]
         self.last_push_id = -1
         self.last_image = ""
         self.last_pushtime = -1
@@ -59,16 +59,16 @@ class SwarmFirmwareDatabase:
         print("Node {} pull OK".format(drone_id))
         self.drones[drone_id].set_pulling_OK()
         dump_db(self)
-    
+
     def get_drones(self):
         return self.drones
 
     def time_now(self):
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     def push_ago(self):
         return math.floor(time.time() - self.last_pushtime)
-    
+
     def print_info(self, _id):
         return self.drones[_id].print_info() + " Is lastest:{}".format( self.drones[_id].last_update > self.last_pushtime)
 
@@ -117,13 +117,13 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("template.html", title="Drone Firmware", db=self.db)
 
-DB_PATH = "/home/dji/fw.db"
+DB_PATH = "/home/xuhao/mf2/fw.db"
 def dump_db(db):
     global DB_PATH
     print("Update DB", DB_PATH)
     pickle.dump(db, open(DB_PATH, "wb"))
 
-if __name__ == "__main__":
+def main():
     try:
         db = pickle.load(open(DB_PATH, "rb"))
         print("Successful load db from file")
@@ -144,3 +144,5 @@ if __name__ == "__main__":
     print("server inited; waiting for connection on port", port)
     app.listen(port)
     tornado.ioloop.IOLoop.current().start()
+
+main()
