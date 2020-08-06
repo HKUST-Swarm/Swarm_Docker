@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 if [ $CAM_TYPE -eq 0 ]
 then
-    rosrun vins vins_node /home/dji/SwarmConfig/fisheye_ptgrey_n3/fisheye.yaml &> $LOG_PATH/log_vo.txt &
+    taskset -c 4-6 roslaunch vins fisheye.launch &> $LOG_PATH/log_vo.txt &
     echo "VINS:"$! >> $PID_FILE
     /bin/sleep 1.0
-    #roslaunch vins nodelet_realsense_full.launch &> $LOG_PATH/log_vo.txt &
 fi
 
 if [ $CAM_TYPE -eq 1 ]

@@ -50,27 +50,32 @@ while getopts "ehrdpu" opt; do
             ;;
     esac
 done
+
  #-v /dev:/dev \
             #--privileged \
 if [ $EDIT -eq 1 ]; then
+    sudo xhost +si:localuser:root
     nvidia-docker run \
             -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /home/dji/.ssh:/root/.ssh \
+            -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
+	        -v /root/.ros/log:/root/.ros/log \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             -v /ssd:/ssd \
-            --user=$USER \
-            --env="DISPLAY" \
+            -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/passwd:/etc/passwd:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name swarm \
+            --net=host \
             --rm \
             -it ${DOCKER_IMAGE} \
             /bin/zsh
 
+            #--volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
 elif [ $RUN -eq 1 ]; then
 
     echo "Sourceing host machine..."
@@ -211,11 +216,11 @@ elif [ $RUN -eq 1 ]; then
             -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /home/dji/.ssh:/root/.ssh \
-            -v /home/dji/swarm_log:/home/dji/swarm_log \
-            -v /root/.ros/log/latest:/root/.ros/log/latest \
+            -v /root/.ros/log/:/root/.ros/log/ \
             -v /ssd:/ssd \
             -v $PID_FILE:$PID_FILE \
-            -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
+            -v /home/dji/:/home/dji/ \
+            -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
             --rm \
             --user=$USER \
             --env="DISPLAY" \
@@ -224,6 +229,7 @@ elif [ $RUN -eq 1 ]; then
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+            --net=host \
             -e PID_FILE=$PID_FILE \
             -e LOG_PATH=$LOG_PATH \
             -e START_VO_STUFF=$START_VO_STUFF \
@@ -261,7 +267,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        nvidia-docker exec swarm /ros_entrypoint.sh "./run_sdk.sh"
+        nvidia-docker exec swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_sdk.sh"
         sleep 5
     fi
 
@@ -269,14 +275,14 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "start loopserver"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_loopserver.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Dockerrun_loopserver.sh"
         sleep 5
     fi
 
     if [ $START_PLAN -eq 1 ]
     then
         echo "start planner"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_plan.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_plan.sh"
     fi
 
     if [ $START_CAMERA -eq 1 ]
@@ -285,7 +291,7 @@ elif [ $RUN -eq 1 ]; then
         if [ $CAM_TYPE -eq 0 ]
         then
             echo "Will use pointgrey Camera"
-            nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_stereo.sh"
+            nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_stereo.sh"
         fi
 
         if [ $CAM_TYPE -eq 3 ]
@@ -307,14 +313,14 @@ elif [ $RUN -eq 1 ]; then
     then
         /bin/sleep 10
         echo "Image ready start VO"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_vo.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_vo.sh"
     fi
 
 
     if [ $START_UWB_VICON -eq 1 ]
     then
         echo "Start UWB VO"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_vicon.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_vicon.sh"
     fi
 
     if [ $START_UWB_COMM -eq 1 ]
@@ -322,36 +328,31 @@ elif [ $RUN -eq 1 ]; then
         echo "Start UWB COMM"
         roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
         echo "UWB NODE:"$! >> $PID_FILE
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_comm.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_comm.sh"
     fi
 
     if [ $START_UWB_FUSE -eq 1 ]
     then
-        echo "start ptgrey"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_ptgrey.sh"
-    fi
-    if [ $START_UWB_FUSE -eq 1 ]
-    then
         echo "Start swarm detector"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_swarm_detection.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_swarm_detection.sh"
     fi
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "Start UWB fuse"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_uwb_fuse.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_fuse.sh"
     fi
 
 
     if [ $START_CONTROL -eq 1 ]
     then
         echo "Start CONTROL"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_control.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_control.sh"
     fi
 
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "Will start swarm loop"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "./run_swarmloop.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_swarmloop.sh"
     fi
 
     if [ $RECORD_BAG -eq 1 ]

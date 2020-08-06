@@ -4,6 +4,7 @@ source /home/dji/Swarm_Docker/image_config.sh
 IMAGE_ID="$(docker inspect --format='{{.Image}}' $(docker ps -aq))"
 FW_URL="http://${MANAGER_SERVER}/push/$DRONE_ID/$IMAGE_ID"
 
+docker tag ${SERVER_IMAGE} ${DOCKER_IMAGE}
 if [ "$#" -eq 0 ];then
     echo "Commit&Push to i7 server with name as" ${SERVER_IMAGE}
     docker commit swarm ${SERVER_IMAGE}
