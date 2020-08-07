@@ -79,8 +79,7 @@ if [ $EDIT -eq 1 ]; then
 elif [ $RUN -eq 1 ]; then
 
     echo "Sourceing host machine..."
-    source /opt/ros/kinetic/setup.bash
-    source /home/dji/swarm_ws/devel/setup.bash
+    source /opt/ros/melodic/setup.bash
 
     export ROS_MASTER_URI=http://localhost:11311
 
@@ -89,7 +88,7 @@ elif [ $RUN -eq 1 ]; then
     #LOG_PATH=/ssd/swarm_log/`date +%F_%T`
     CONFIG_PATH=/home/dji/SwarmConfig
 
-    source $CONFIG_PATH/autostart_config.sh
+    source $CONFIG_PATH/configs.sh
 
     if [ "$#" -ge 2 ]; then
         export SWARM_START_MODE=$2
@@ -260,7 +259,7 @@ elif [ $RUN -eq 1 ]; then
 
     echo "Enabling chicken blood mode"
     sudo /usr/sbin/nvpmodel -m0
-    sudo /home/dji/jetson_clocks.sh
+    sudo /usr/bin/jetson_clocks
 
     sleep 5
 
@@ -275,7 +274,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "start loopserver"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Dockerrun_loopserver.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_loopserver.sh"
         sleep 5
     fi
 
