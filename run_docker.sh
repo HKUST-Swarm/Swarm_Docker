@@ -57,7 +57,6 @@ if [ $EDIT -eq 1 ]; then
     sudo xhost +si:localuser:root
     nvidia-docker run \
             -v /dev/ttyPTGREY:/dev/ttyPTGREY \
-            -v /home/dji/.ssh:/root/.ssh \
             -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
 	        -v /root/.ros/log:/root/.ros/log \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
@@ -65,17 +64,16 @@ if [ $EDIT -eq 1 ]; then
             -v /ssd:/ssd \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
-            --volume="/etc/passwd:/etc/passwd:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-            --name swarm \
+            --name=swarm \
+            --user 0 \
             --net=host \
             --rm \
             -it ${DOCKER_IMAGE} \
             /bin/zsh
-
-            #--volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
+            
 elif [ $RUN -eq 1 ]; then
 
     echo "Sourceing host machine..."
@@ -210,44 +208,23 @@ elif [ $RUN -eq 1 ]; then
         exit 0
     fi
 
-    echo "PTGREY"$PTGREY_ID
+    echo "Start NVIDIA"
     nvidia-docker run \
             -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyTHS2:/dev/ttyTHS2 \
-            -v /home/dji/.ssh:/root/.ssh \
             -v /root/.ros/log/:/root/.ros/log/ \
             -v /ssd:/ssd \
             -v $PID_FILE:$PID_FILE \
             -v /home/dji/:/home/dji/ \
             -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
             --rm \
-            --user=$USER \
             --env="DISPLAY" \
             --volume="/etc/group:/etc/group:ro" \
-            --volume="/etc/passwd:/etc/passwd:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --net=host \
-            -e PID_FILE=$PID_FILE \
-            -e LOG_PATH=$LOG_PATH \
-            -e START_VO_STUFF=$START_VO_STUFF \
-            -e START_CAMERA=$START_CAMERA \
-            -e CAM_TYPE=$CAM_TYPE \
-            -e START_DJISDK=$START_DJISDK \
-            -e START_UWB_VICON=$START_UWB_VICON \
-            -e START_UWB_COMM=$START_UWB_COMM \
-            -e START_UWB_FUSE=$START_UWB_FUSE \
-            -e START_CONTROL=$START_CONTROL \
-            -e USE_VICON_CTRL=$USE_VICON_CTRL \
-            -e START_CAMERA_SYNC=$START_CAMERA_SYNC \
-            -e START_SWARM_LOOP=$START_SWARM_LOOP \
-            -e USE_DJI_IMU=$USE_DJI_IMU \
-            -e NODE_ID=$NODE_ID \
-            -e PTGREY_ID=$PTGREY_ID \
-            -e UP_ID=$UP_ID \
-            -e DOWN_ID=$DOWN_ID \
-            --name swarm \
+            --name=swarm \
             -d \
             -it ${DOCKER_IMAGE} \
             /bin/zsh &> $LOG_PATH/log_docker.txt &
