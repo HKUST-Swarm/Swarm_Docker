@@ -217,6 +217,8 @@ elif [ $RUN -eq 1 ]; then
             -v $PID_FILE:$PID_FILE \
             -v /home/dji/:/home/dji/ \
             -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
+            -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
+            -v /home/dji/SwarmConfig:/root/SwarmConfig \
             --rm \
             --env="DISPLAY" \
             --volume="/etc/group:/etc/group:ro" \
