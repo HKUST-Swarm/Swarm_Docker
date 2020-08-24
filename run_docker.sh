@@ -237,6 +237,7 @@ elif [ $RUN -eq 1 ]; then
     echo "Enabling chicken blood mode"
     sudo /usr/sbin/nvpmodel -m0
     sudo /usr/bin/jetson_clocks
+    nvidia-docker exec swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_ssh.sh"
 
     sleep 5
 
