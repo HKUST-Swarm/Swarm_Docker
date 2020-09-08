@@ -255,6 +255,11 @@ elif [ $RUN -eq 1 ]; then
         roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
+
+        if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ] 
+        then
+            python /home/dji/Swarm_Docker/djisdk_sync_helper.py
+        fi
     fi
 
 
@@ -277,6 +282,12 @@ elif [ $RUN -eq 1 ]; then
         if [ $CAM_TYPE -eq 0 ]
         then
             echo "Will use pointgrey Camera"
+            roslaunch ptgrey_reader stereo.launch is_sync:=false &> $LOG_PATH/log_camera.txt &
+            PG_PID=$!
+            /bin/sleep 5
+            sudo kill -- $PG_PID
+
+            echo "Start PointGrey in Sync Mode"
             roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
             echo "PTGREY:"$! >> $PID_FILE
         fi
