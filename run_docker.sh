@@ -63,6 +63,7 @@ if [ $EDIT -eq 1 ]; then
             -v /ssd:/ssd \
             -v /usr/include/:/usr/include/ \
             -v /etc/alternatives/:/etc/alternatives/ \
+            -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
@@ -212,16 +213,12 @@ elif [ $RUN -eq 1 ]; then
 
     echo "Start NVIDIA DOCKER"
     nvidia-docker run \
-            -v /dev/ttyPTGREY:/dev/ttyPTGREY \
-            -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /root/.ros/log/:/root/.ros/log/ \
             -v /ssd:/ssd \
-            -v /dev/bus:/dev/bus \
-            -v $PID_FILE:$PID_FILE \
-            -v /home/dji/:/home/dji/ \
-            -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
-            -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
+            -v /home/dji:/home/dji \
+            -v /home/dji/Swarm_Docker:/root/Swarm_Docker \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
+            --device=/dev/ttyUSB0 \
             --rm \
             --env="DISPLAY" \
             -e LOG_PATH=$LOG_PATH \
@@ -231,6 +228,7 @@ elif [ $RUN -eq 1 ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --net=host \
             --name=swarm \
+            --user 0 \
             -d \
             -it ${DOCKER_IMAGE} \
             /bin/zsh &> $LOG_PATH/log_docker.txt &
@@ -317,6 +315,10 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_UWB_VICON -eq 1 ]
     then
+        echo "START INF UWB ROS"
+        taskset -c 1-3 roslaunch inf_uwb_ros uwb.launch &> $LOG_PATH/log_uwb.txt &
+        echo "SWARM_INF_UWB:"$! >> $PID_FILE
+        
         echo "Start UWB VO"
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_vicon.sh"
     fi
