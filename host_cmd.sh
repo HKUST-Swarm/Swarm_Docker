@@ -11,7 +11,7 @@ then
 fi
 
 #VO
-if [ $START_VO_STUFF -eq 1 ]
+if [ $START_VO -eq 1 ]
 then
     sleep 10
     echo "Image ready start VO"

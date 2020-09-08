@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+source /root/SwarmConfig/configs.sh
+
 if [ $USE_VICON_CTRL -eq 1 ]
 then
     echo "Start drone_commander with VICON"

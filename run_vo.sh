@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+source /root/SwarmConfig/configs.sh
+
 if [ $CAM_TYPE -eq 0 ]
 then
     taskset -c 4-6 roslaunch vins fisheye.launch &> $LOG_PATH/log_vo.txt &

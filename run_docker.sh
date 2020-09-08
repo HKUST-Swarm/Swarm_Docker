@@ -56,12 +56,13 @@ done
 if [ $EDIT -eq 1 ]; then
     sudo xhost +si:localuser:root
     nvidia-docker run \
-            -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
 	        -v /root/.ros/log:/root/.ros/log \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             -v /ssd:/ssd \
+            -v /usr/include/:/usr/include/ \
+            -v /etc/alternatives/:/etc/alternatives/ \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
@@ -76,29 +77,30 @@ if [ $EDIT -eq 1 ]; then
             
 elif [ $RUN -eq 1 ]; then
 
-    echo "Sourceing host machine..."
+    echo "Sourcing host machine..."
     source /opt/ros/melodic/setup.bash
+    source /home/dji/swarm_ws/devel/setup.bash
 
     export ROS_MASTER_URI=http://localhost:11311
 
+    CONFIG_PATH=/home/dji/SwarmConfig
+    source $CONFIG_PATH/configs.sh
 
     LOG_PATH=/home/dji/swarm_log/`date +%F_%T`
-    #LOG_PATH=/ssd/swarm_log/`date +%F_%T`
-    CONFIG_PATH=/home/dji/SwarmConfig
-
-    source $CONFIG_PATH/configs.sh
 
     if [ "$#" -ge 2 ]; then
         export SWARM_START_MODE=$2
-        echo "Start swarm with MODE" $2
     fi
+
+    echo "Start swarm with MODE" $2
 
     if [ $SWARM_START_MODE -ge 0 ]
     then
         sudo mkdir -p $LOG_PATH
         sudo chmod a+rw $LOG_PATH
-        sudo rm /home/dji/swarm_log_lastest
-        ln -s $LOG_PATH /home/dji/swarm_log_lastest
+        sudo rm /home/dji/swarm_log_latest
+        ln -s $LOG_PATH /home/dji/swarm_log_latest
+        LOG_PATH=/home/dji/swarm_log_latest
         sudo ln -s /root/.ros/log/latest $LOG_PATH
 
         if [ $CONFIG_NETWORK -eq 1 ]
@@ -111,7 +113,7 @@ elif [ $RUN -eq 1 ]; then
         /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
         echo "Pull docker start"
 
-        PID_FILE=/home/dji/swarm_log_lastest/pids.txt
+        PID_FILE=/home/dji/swarm_log_latest/pids.txt
         touch $PID_FILE
         echo "Start ros core"
         roscore &> $LOG_PATH/log_roscore.txt &
@@ -126,7 +128,7 @@ elif [ $RUN -eq 1 ]; then
         export START_CAMERA_SYNC=0
         export START_UWB_FUSE=0
         export START_DJISDK=1
-        export START_VO_STUFF=0
+        export START_VO=0
         export START_UWB_VICON=0
         export USE_VICON_CTRL=0
         export USE_DJI_IMU=0
@@ -135,7 +137,7 @@ elif [ $RUN -eq 1 ]; then
         if [ $SWARM_START_MODE -ge 1 ]
         then
             echo "Will start VO"
-            START_VO_STUFF=1
+            START_VO=1
             START_CAMERA_SYNC=1
             if [ $CAM_TYPE -eq 3 ]
             then
@@ -178,7 +180,7 @@ elif [ $RUN -eq 1 ]; then
             START_CAMERA=0
             START_UWB_COMM=0
             START_UWB_FUSE=0
-            START_VO_STUFF=0
+            START_VO=0
             START_CAMERA_SYNC=0
         fi
 
@@ -193,7 +195,7 @@ elif [ $RUN -eq 1 ]; then
             START_CAMERA=1
             START_UWB_COMM=1
             START_UWB_FUSE=0
-            START_VO_STUFF=0
+            START_VO=0
             START_CAMERA_SYNC=0
 
         fi
@@ -201,19 +203,20 @@ elif [ $RUN -eq 1 ]; then
         if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]  ||  [ $START_CONTROL -eq 1  ] || [ $USE_DJI_IMU -eq 1 ]
         then
             export START_DJISDK=1
-            echo "Using Ptgrey Camera, USE DJI IMUor using control, will boot dji sdk"
+            echo "Using Ptgrey Camera, USE DJI IMU or using control, will boot dji sdk"
         fi
 
     else
         exit 0
     fi
 
-    echo "Start NVIDIA"
+    echo "Start NVIDIA DOCKER"
     nvidia-docker run \
             -v /dev/ttyPTGREY:/dev/ttyPTGREY \
             -v /dev/ttyTHS2:/dev/ttyTHS2 \
             -v /root/.ros/log/:/root/.ros/log/ \
             -v /ssd:/ssd \
+            -v /dev/bus:/dev/bus \
             -v $PID_FILE:$PID_FILE \
             -v /home/dji/:/home/dji/ \
             -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
@@ -221,6 +224,7 @@ elif [ $RUN -eq 1 ]; then
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             --rm \
             --env="DISPLAY" \
+            -e LOG_PATH=$LOG_PATH \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
@@ -232,21 +236,24 @@ elif [ $RUN -eq 1 ]; then
             /bin/zsh &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
-    roslaunch rosbridge_server rosbridge_websocket.launch &> $LOG_PATH/log_rosbridge.txt &
-    echo "rosbridge:"$! >> $PID_FILE
-
+    if [ $START_ROSBRIDGE -eq 1 ]
+    then
+        roslaunch rosbridge_server rosbridge_websocket.launch &> $LOG_PATH/log_rosbridge.txt &
+        echo "rosbridge:"$! >> $PID_FILE
+    fi
 
     echo "Enabling chicken blood mode"
     sudo /usr/sbin/nvpmodel -m0
     sudo /usr/bin/jetson_clocks
-    nvidia-docker exec swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_ssh.sh"
+    nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_ssh.sh"
 
     sleep 5
 
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        nvidia-docker exec swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_sdk.sh"
+        roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
+        echo "DJISDK:"$! >> $PID_FILE
         sleep 5
     fi
 
@@ -270,7 +277,8 @@ elif [ $RUN -eq 1 ]; then
         if [ $CAM_TYPE -eq 0 ]
         then
             echo "Will use pointgrey Camera"
-            nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_stereo.sh"
+            roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
+            echo "PTGREY:"$! >> $PID_FILE
         fi
 
         if [ $CAM_TYPE -eq 3 ]
@@ -288,7 +296,7 @@ elif [ $RUN -eq 1 ]; then
 
 
 
-    if [ $START_VO_STUFF -eq 1 ]
+    if [ $START_VO -eq 1 ]
     then
         /bin/sleep 10
         echo "Image ready start VO"

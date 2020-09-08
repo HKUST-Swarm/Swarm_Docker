@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+source /root/SwarmConfig/configs.sh
 echo "Will start swarm loop"
 taskset -c 1-3 roslaunch swarm_loop loop-server.launch &> $LOG_PATH/log_swarm_loop_server.txt &
 echo "LOOPSERVER:"$! >> $PID_FILE
