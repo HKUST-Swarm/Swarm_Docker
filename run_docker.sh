@@ -104,21 +104,15 @@ elif [ $RUN -eq 1 ]; then
         LOG_PATH=/home/dji/swarm_log_latest
         sudo ln -s /root/.ros/log/latest $LOG_PATH
 
-        if [ $CONFIG_NETWORK -eq 1 ]
-        then
-            /home/dji/SwarmAutoInstall/setup_adhoc.sh $NODE_ID &> $LOG_PATH/log_network.txt &
-            echo "Wait 10 for network setup"
-            /bin/sleep 10
-        fi
-
         /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
         echo "Pull docker start"
 
         PID_FILE=/home/dji/swarm_log_latest/pids.txt
         touch $PID_FILE
-        echo "Start ros core"
-        roscore &> $LOG_PATH/log_roscore.txt &
-        echo "roscore:"$! >> $PID_FILE
+        # echo "Start ros core"
+        # roscore &> $LOG_PATH/log_roscore.txt &
+        # echo "roscore:"$! >> $PID_FILE
+        
         #/bin/sleep 5 wait for core
         /bin/sleep 5
 
@@ -222,6 +216,7 @@ elif [ $RUN -eq 1 ]; then
             --rm \
             --env="DISPLAY" \
             -e LOG_PATH=$LOG_PATH \
+            -e ROS_MASTER_URI=$ROS_MASTER_URI \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
@@ -230,10 +225,12 @@ elif [ $RUN -eq 1 ]; then
             --name=swarm \
             --user 0 \
             -d \
-            -it ${DOCKER_IMAGE} \
-            /bin/zsh &> $LOG_PATH/log_docker.txt &
+            --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
+            ${DOCKER_IMAGE} \
+            /run_roscore.sh &> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
+    sleep 5
     if [ $START_ROSBRIDGE -eq 1 ]
     then
         roslaunch rosbridge_server rosbridge_websocket.launch &> $LOG_PATH/log_rosbridge.txt &

@@ -3,7 +3,7 @@ source /home/dji/SwarmConfig/configs.sh
 
 sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'
 
-if [ $SETUP_ADHOC -eq 1 ]; then
+if [ $CONFIG_NETWORK -eq 1 ]; then
     /home/dji/Swarm_Docker/setup_adhoc.sh $DRONE_ID &
     echo "Wait 10 for network setup"
     /bin/sleep 10
