@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source /root/SwarmConfig/configs.sh
+export LD_PRELOAD=/usr/lib/gcc/aarch64-linux-gnu/7/libgomp.so
 
 if [ $CAM_TYPE -eq 0 ]
 then
