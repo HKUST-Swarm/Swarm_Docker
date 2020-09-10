@@ -212,7 +212,6 @@ elif [ $RUN -eq 1 ]; then
             -v /home/dji:/home/dji \
             -v /home/dji/Swarm_Docker:/root/Swarm_Docker \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
-            --device=/dev/ttyUSB0 \
             --rm \
             --env="DISPLAY" \
             -e LOG_PATH=$LOG_PATH \
