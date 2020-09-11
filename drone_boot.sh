@@ -1,3 +1,4 @@
+#!/bin/bash
 #echo "pull imagestart" >> /home/dji/log.txt
 source /home/dji/SwarmConfig/configs.sh
 
