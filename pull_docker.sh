@@ -29,19 +29,20 @@ then
 echo "`date`--Start pulling docker image" 
     if [ $SERVER -eq 1 ]
     then
-        wget -qO- http://${MANAGER_SERVER}/pull/$NODE_ID &
+        wget -qO- http://${MANAGER_SERVER}/pull/$DRONE_ID &
     fi
 
     if docker pull $IMAGE | grep "Image is up to date";then
-	    if [ $SERVER -eq 1 ]
+	if [ $SERVER -eq 1 ]
         then
-            wget -qO- http://${MANAGER_SERVER}/ok/$NODE_ID &
+            echo "Send OK"
+            wget -qO- http://${MANAGER_SERVER}/ok/$DRONE_ID &
         fi
         echo "up to date" 
     else
-	    if [ $SERVER -eq 1 ]
+	if [ $SERVER -eq 1 ]
         then
-            wget -qO- http://${MANAGER_SERVER}/pull_ok/$NODE_ID &
+            wget -qO- http://${MANAGER_SERVER}/pull_ok/$DRONE_ID &
         fi
         echo "pulling new image"
     fi
