@@ -75,7 +75,7 @@ if [ $EDIT -eq 1 ]; then
             --rm \
             -it ${DOCKER_IMAGE} \
             /bin/zsh
-            
+
 elif [ $RUN -eq 1 ]; then
 
     echo "Sourcing host machine..."
@@ -104,15 +104,15 @@ elif [ $RUN -eq 1 ]; then
         LOG_PATH=/home/dji/swarm_log_latest
         sudo ln -s /root/.ros/log/latest $LOG_PATH
 
-        /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
-        echo "Pull docker start"
+        #/home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt 2>&1
+        #echo "Pull docker start"
 
         PID_FILE=/home/dji/swarm_log_latest/pids.txt
         touch $PID_FILE
         # echo "Start ros core"
         # roscore &> $LOG_PATH/log_roscore.txt &
         # echo "roscore:"$! >> $PID_FILE
-        
+
         #/bin/sleep 5 wait for core
         /bin/sleep 5
 
@@ -226,7 +226,7 @@ elif [ $RUN -eq 1 ]; then
             -d \
             --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
             ${DOCKER_IMAGE} \
-            /run_roscore.sh &> $LOG_PATH/log_docker.txt &
+            /run_roscore.sh #&> $LOG_PATH/log_docker.txt &
         echo "DOCKER RUN:"$!>>$PID_FILE
 
     sleep 5
@@ -250,7 +250,7 @@ elif [ $RUN -eq 1 ]; then
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
 
-        if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ] 
+        if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]
         then
             python /home/dji/Swarm_Docker/djisdk_sync_helper.py
         fi
@@ -314,7 +314,7 @@ elif [ $RUN -eq 1 ]; then
         echo "START INF UWB ROS"
         taskset -c 1-3 roslaunch inf_uwb_ros uwb.launch &> $LOG_PATH/log_uwb.txt &
         echo "SWARM_INF_UWB:"$! >> $PID_FILE
-        
+
         echo "Start UWB VO"
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_vicon.sh"
     fi
@@ -341,8 +341,11 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $START_CONTROL -eq 1 ]
     then
-        echo "Start CONTROL"
+	echo "Start CONTROL (Drone cmd only)"
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_control.sh"
+        #taskset -c 1-3 roslaunch drone_position_control pos_control.launch &> $LOG_PATH/log_drone_position_ctrl.txt &
+        #echo "drone_pos_ctrl:"$! >> $PID_FILE
+
     fi
 
     if [ $START_SWARM_LOOP -eq 1 ]
