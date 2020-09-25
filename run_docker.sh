@@ -64,6 +64,7 @@ if [ $EDIT -eq 1 ]; then
             -v /usr/include/:/usr/include/ \
             -v /etc/alternatives/:/etc/alternatives/ \
             -v /dev/ttyUSB0:/dev/ttyUSB0 \
+            -v /ssd/swarm_ws_build_docker:/root/swarm_ws/build \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
@@ -211,6 +212,7 @@ elif [ $RUN -eq 1 ]; then
             -v /ssd:/ssd \
             -v /home/dji:/home/dji \
             -v /home/dji/Swarm_Docker:/root/Swarm_Docker \
+            -v /ssd/swarm_ws_build_docker:/root/swarm_ws/build \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             --rm \
             --env="DISPLAY" \

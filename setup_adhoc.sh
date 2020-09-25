@@ -1,4 +1,5 @@
 #!/bin/bash
+source /home/dji/SwarmConfig/configs.sh
 echo "will set ip to 10.10.1.$1"
 sudo iw wlan0 set power_save off
 sudo service network-manager stop
@@ -7,7 +8,7 @@ sudo ip link set wlan0 up
 sudo iw reg set IN
 sudo iwconfig wlan0 mode ad-hoc
 sudo ifconfig wlan0 mtu 1560
-sudo iwconfig wlan0 channel 13
+sudo iwconfig wlan0 channel $WIFI_CHANNEL
 sudo iwconfig wlan0 essid 'swarm-mesh-network'
 #sudo ip link set wlan0 up
 sudo iwconfig wlan0 ap 02:72:C5:C8:D1:BE
