@@ -263,7 +263,6 @@ elif [ $RUN -eq 1 ]; then
     then
         echo "start loopserver"
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_loopserver.sh"
-        sleep 5
     fi
 
     if [ $START_PLAN -eq 1 ]
@@ -301,7 +300,11 @@ elif [ $RUN -eq 1 ]; then
         fi
     fi
 
-
+    if [ $START_SWARM_LOOP -eq 1 ]
+    then
+        echo "Wait for loop server bootup, this really take a long time"
+        python /home/dji/Swarm_Docker/wait_for_loop_server.py
+    fi
 
     if [ $START_VO -eq 1 ]
     then
@@ -353,7 +356,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_SWARM_LOOP -eq 1 ]
     then
         echo "Will start swarm loop"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_swarmloop.sh"
+        # nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_swarmloop.sh"
     fi
 
     if [ $RECORD_BAG -eq 1 ]

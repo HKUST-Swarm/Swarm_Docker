@@ -11,7 +11,7 @@ if [ $CONFIG_NETWORK -eq 1 ]; then
 fi
 
 if [ $PULL_DOCKER -eq 1 ]; then
-    /bin/bash /home/dji/Swarm_Docker/pull_docker.sh >> /home/dji/log.txt
+    /bin/bash /home/dji/Swarm_Docker/pull_docker.sh > /home/dji/log.txt
 fi 
 
 if [ $START_DOCKER -eq 1 ]; then
