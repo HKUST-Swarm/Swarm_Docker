@@ -340,7 +340,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_UWB_FUSE -eq 1 ]
     then
         echo "Start UWB fuse"
-        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_fuse.sh"
+        nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_swarm_localization.sh"
     fi
 
 
