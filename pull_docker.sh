@@ -44,8 +44,8 @@ echo "`date`--Start pulling docker image"
         then
             wget -qO- http://${MANAGER_SERVER}/pull_ok/$DRONE_ID &
         fi
-        echo "pulling new image"
+        echo "pulled new image"
     fi
 else
-    echo "Use local copy"
+    echo "Not able to pull image from server, use local copy instead"
 fi
