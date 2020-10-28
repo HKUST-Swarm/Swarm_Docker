@@ -52,9 +52,6 @@ fi
 if [ $START_UWB_FUSE -eq 1 ]
 then
 
-    #roslaunch swarm_detection swarm_detect.launch &> $LOG_PATH/log_swarm_detection.txt &
-    taskset -c 5-6 roslaunch swarm_yolo drone_detector.launch &> $LOG_PATH/log_swarm_detection.txt &
-    echo "SWARM_DETECT:"$! >> $PID_FILE
     taskset -c 5-6 roslaunch swarm_localization local-5-drone.launch &> $LOG_PATH/log_swarm.txt &
     echo "SWARM_LOCAL:"$! >> $PID_FILE
 fi
