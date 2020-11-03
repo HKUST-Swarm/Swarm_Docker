@@ -248,7 +248,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_DJISDK -eq 1 ]
     then
         echo "dji_sdk start"
-        roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
+        taskset -c 2 roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
 
@@ -283,7 +283,7 @@ elif [ $RUN -eq 1 ]; then
             sudo kill -- $PG_PID
 
             echo "Start PointGrey in Sync Mode"
-            roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
+            taskset -c 2 roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
             echo "PTGREY:"$! >> $PID_FILE
         fi
 
@@ -317,7 +317,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_UWB_VICON -eq 1 ]
     then
         echo "START INF UWB ROS"
-        taskset -c 1-3 roslaunch inf_uwb_ros uwb.launch &> $LOG_PATH/log_uwb.txt &
+        taskset -c 1 roslaunch inf_uwb_ros uwb.launch &> $LOG_PATH/log_uwb.txt &
         echo "SWARM_INF_UWB:"$! >> $PID_FILE
 
         echo "Start UWB VO"
@@ -327,7 +327,7 @@ elif [ $RUN -eq 1 ]; then
     if [ $START_UWB_COMM -eq 1 ]
     then
         echo "Start UWB COMM"
-        roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
+        taskset -c 1 roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
         echo "UWB NODE:"$! >> $PID_FILE
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_comm.sh"
     fi
