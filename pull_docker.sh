@@ -5,7 +5,7 @@ export LANG=C
 
 HOSTNAME=8.8.8.8
 source /home/dji/SwarmConfig/configs.sh
-source /home/dji/Swarm_Docker/image_config.sh
+source /home/dji/SwarmConfig/image_config.sh
 SERVER=1
 if [ "$#" -gt 0  ]
 then

@@ -1,6 +1,6 @@
 #!/bin/bash
 source /home/dji/SwarmConfig/configs.sh
-source /home/dji/Swarm_Docker/image_config.sh
+source /home/dji/SwarmConfig/image_config.sh
 IMAGE_ID="$(docker inspect --format='{{.Image}}' $(docker ps -aq))"
 FW_URL="http://${MANAGER_SERVER}/push/$DRONE_ID/$IMAGE_ID"
 
