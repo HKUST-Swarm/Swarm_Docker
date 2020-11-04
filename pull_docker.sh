@@ -14,38 +14,29 @@ then
     SERVER=0
 else
     echo "Pull from i7"
-    IMAGE=$SERVER_IMAGE
+    IMAGE=$DOCKER_IMAGE
 fi
-#ping -c1 8.8.8.8 > /dev/null
-#echo $?
-#while  ping -c1 {$HOSTNAME} &>/dev/null
-#        do echo "Ping Fail - `date`"
-#while ! sudo /sbin/ethtool eth0 | grep -q "Link detected: yes"
-#    do echo "No connection"
-#        /bin/sleep 5
-#done
 if ping -c1 8.8.8.8 &>/dev/null
 then
 echo "`date`--Start pulling docker image" 
-    if [ $SERVER -eq 1 ]
-    then
-        wget -qO- http://${MANAGER_SERVER}/pull/$DRONE_ID &
-    fi
 
-    if docker pull $IMAGE | grep "Image is up to date";then
-	if [ $SERVER -eq 1 ]
-        then
-            echo "Send OK"
-            wget -qO- http://${MANAGER_SERVER}/ok/$DRONE_ID &
-        fi
-        echo "up to date" 
-    else
-	if [ $SERVER -eq 1 ]
-        then
-            wget -qO- http://${MANAGER_SERVER}/pull_ok/$DRONE_ID &
-        fi
-        echo "pulled new image"
-    fi
-else
-    echo "Not able to pull image from server, use local copy instead"
+if [ $SERVER -eq 1 ]
+then
+    wget -qO- http://${MANAGER_SERVER}/pull/$DRONE_ID &
 fi
+
+docker pull $IMAGE | grep "Image is up to date";
+
+if [ $SERVER -eq 1 ]
+    then
+        echo "Send OK"
+        wget -qO- http://${MANAGER_SERVER}/ok/$DRONE_ID &
+    fi
+    echo "up to date" 
+else
+
+if [ $SERVER -eq 1 ]
+    then
+        wget -qO- http://${MANAGER_SERVER}/pull_ok/$DRONE_ID &
+fi
+echo "pulled new image"
