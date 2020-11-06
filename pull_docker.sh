@@ -35,8 +35,10 @@ if [ $SERVER -eq 1 ]
     echo "up to date" 
 else
 
-if [ $SERVER -eq 1 ]
-    then
-        wget -qO- http://${MANAGER_SERVER}/pull_ok/$DRONE_ID &
+    if [ $SERVER -eq 1 ]
+        then
+            wget -qO- http://${MANAGER_SERVER}/pull_ok/$DRONE_ID &
+    fi
+    echo "pulled new image"
 fi
-echo "pulled new image"
+
