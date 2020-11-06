@@ -25,7 +25,7 @@ then
     wget -qO- http://${MANAGER_SERVER}/pull/$DRONE_ID &
 fi
 
-docker pull $IMAGE | grep "Image is up to date";
+docker pull $IMAGE
 
 if [ $SERVER -eq 1 ]
     then

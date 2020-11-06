@@ -74,7 +74,7 @@ then
         if [ $PTGREY_NODELET -eq 0 ]
         then
             echo "Start PointGrey in Sync Mode"
-            taskset -c 0,1 roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
+            roslaunch ptgrey_reader stereo.launch &> $LOG_PATH/log_camera.txt &
             echo "PTGREY:"$! >> $PID_FILE
         fi
     fi
