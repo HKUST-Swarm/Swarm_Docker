@@ -255,13 +255,12 @@ elif [ $RUN -eq 1 ]; then
     then
         echo "Will start swarm loop"
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_swarmloop.sh"
-        /bin/sleep 30
+        /bin/sleep 60
     fi
 
     if [ $START_VO -eq 1 ]
     then
         echo "Image ready start VO"
         nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_vo.sh"
-
     fi
 fi
