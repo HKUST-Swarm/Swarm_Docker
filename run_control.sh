@@ -12,5 +12,6 @@ echo "drone_pos_ctrl:"$! >> $PID_FILE
 #echo "traj":$! >> $PID_FILE
 
 echo "Start SwarmPilot"
-rosrun swarm_pilot swarm_pilot_node &> $LOG_PATH/log_swarm_pilot.txt &
+#rosrun swarm_pilot swarm_pilot_node &> $LOG_PATH/log_swarm_pilot.txt &
+roslaunch swarm_pilot swarm_pilot.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_swarm_pilot.txt &
 echo "swarm_pilot:"$! >> $PID_FILE
