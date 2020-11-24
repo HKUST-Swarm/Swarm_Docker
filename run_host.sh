@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 CONFIG_PATH=/home/dji/SwarmConfig
-source $CONFIG_PATH/configs.sh
+source /home/dji/Swarm_Docker/start_configs.sh
+source "/home/dji/swarm_ws/devel/setup.bash"
 
 echo "Enabling chicken blood mode"
 sudo /usr/sbin/nvpmodel -m0
 sudo /usr/bin/jetson_clocks
 /home/dji/Swarm_Docker/run_roscore.sh
-
-echo "Sourcing host machine..."
-source /opt/ros/melodic/setup.bash
-source /home/dji/swarm_ws/devel/setup.bash
-
-export ROS_MASTER_URI=http://localhost:11311
 
 LOG_PATH=/home/dji/swarm_log/`date +%F_%T`
 
@@ -27,6 +22,7 @@ PID_FILE=/home/dji/swarm_log_latest/pids.txt
 touch $PID_FILE
 
 sleep 5
+echo "START SDK" $START_DJISDK 
 
 if [ $START_DJISDK -eq 1 ]
 then
@@ -37,6 +33,7 @@ then
 
     if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]
     then
+        echo "Start trigger..."
         python /home/dji/Swarm_Docker/djisdk_sync_helper.py
     fi
 fi

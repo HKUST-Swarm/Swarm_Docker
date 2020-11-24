@@ -7,6 +7,7 @@ if __name__ == "__main__":
     print("Start DJI_SDK Sync Helper")
 
     rospy.wait_for_service('/dji_sdk_1/dji_sdk/set_hardsyc')
+    time.sleep(3)
     call_hardsyc = rospy.ServiceProxy('/dji_sdk_1/dji_sdk/set_hardsyc', SetHardSync)
     
     ret = 0
