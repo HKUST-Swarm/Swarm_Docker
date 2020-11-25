@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 trap : SIGTERM SIGINT
 
-[ "$UID" -eq 0 ] || exec sudo "$0" "$@"
+# [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 
 source /home/dji/SwarmConfig/image_config.sh
 CONFIG_PATH=/home/dji/SwarmConfig
