@@ -43,7 +43,7 @@ fi
 
 if [ $START_VO -eq 1 ]
 then
-    /bin/sleep 10
+    /bin/sleep 30
     echo "Image ready start VO"
     /root/Swarm_Docker/run_vo.sh
 fi
