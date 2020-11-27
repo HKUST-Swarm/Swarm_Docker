@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+CONFIG_PATH=/home/dji/SwarmConfig
 source $CONFIG_PATH/configs.sh
 PID_FILE=/home/dji/swarm_log_latest/pids.txt
 
