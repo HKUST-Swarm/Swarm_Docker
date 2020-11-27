@@ -5,15 +5,21 @@ source "/root/swarm_ws/devel/setup.bash"
 
 /root/Swarm_Docker/run_ssh.sh
     
+if [ $START_UWB_COMM -eq 1 ] 
+then
+    /root/Swarm_Docker/run_uwb_comm.sh
+fi
+
+if [ $START_UWB_FUSE -eq 1 ]
+then
+    echo "Start UWB fuse"
+    /root/Swarm_Docker/run_swarm_localization.sh
+fi
+
 if [ $START_SWARM_LOOP -eq 1 ]
 then
     echo "Will start swarm loop"
     /root/Swarm_Docker/run_swarmloop.sh
-fi
-
-if [ $START_UWB_COMM -eq 1 ] 
-then
-    /root/Swarm_Docker/run_uwb_comm.sh
 fi
 
 if [ $START_PLAN -eq 1 ]
@@ -26,12 +32,6 @@ if [ $START_UWB_FUSE -eq 1 ]
 then
     echo "Start swarm detector"
    /root/Swarm_Docker/run_swarm_detection.sh
-fi
-
-if [ $START_UWB_FUSE -eq 1 ]
-then
-    echo "Start UWB fuse"
-    /root/Swarm_Docker/run_swarm_localization.sh
 fi
 
 if [ $START_CONTROL -eq 1 ]
