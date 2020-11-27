@@ -50,5 +50,10 @@ fi
 
 while [ true ]
 do
-    /bin/sleep 1000000
+    while true; do
+        for N in {1..10}
+        do
+            ping 10.10.1.$N -c 3
+        done
+    done
 done
