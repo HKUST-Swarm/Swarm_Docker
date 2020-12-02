@@ -123,3 +123,6 @@ elif [ $RUN -eq 1 ]; then
             /root/Swarm_Docker/docker_run_script.sh &
     /bin/sleep 20
 fi
+
+echo "Record bag:", $RECORD_BAG
+/home/dji/Swarm_Docker/run_bag_record.sh

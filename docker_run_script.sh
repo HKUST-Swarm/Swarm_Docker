@@ -48,6 +48,8 @@ then
     /root/Swarm_Docker/run_vo.sh
 fi
 
+roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt &
+
 while [ true ]
 do
     while true; do

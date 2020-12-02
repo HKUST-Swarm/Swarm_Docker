@@ -94,4 +94,4 @@ then
     echo "rosbridge:"$! >> $PID_FILE
 fi
 
-/home/dji/Swarm_Docker/run_bag_record.sh
+chmod -R a+rw $LOG_PATH
