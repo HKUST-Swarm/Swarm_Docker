@@ -9,9 +9,9 @@ then
     # echo "VINS:"$! >> $PID_FILE
     if [ $PTGREY_NODELET -eq 1 ]
     then
+        /bin/sleep 3.0
         roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
     fi
-    /bin/sleep 1.0
 fi
 
 if [ $CAM_TYPE -eq 1 ]

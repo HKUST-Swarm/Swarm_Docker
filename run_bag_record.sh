@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
-source $CONFIG_PATH/configs.sh
-source /home/dji/Swarm_Docker/start_configs.sh
-source "/home/dji/swarm_ws/devel/setup.bash"
 
 CONFIG_PATH=/home/dji/SwarmConfig
 BAG_PID_FILE=/home/dji/swarm_log_latest/pid_bag.txt
 LOG_PATH=/home/dji/swarm_log_latest
 mkdir -p /ssd/bags/
 RECORD=/opt/ros/melodic/lib/rosbag/record
+
+source $CONFIG_PATH/configs.sh
+source /home/dji/Swarm_Docker/start_configs.sh
+source "/home/dji/swarm_ws/devel/setup.bash"
 
 if [ $RECORD_BAG -eq 1 ]
 then
