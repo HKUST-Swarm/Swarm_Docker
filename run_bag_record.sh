@@ -50,6 +50,10 @@ then
     $RECORD -o /ssd/bags/swarm_local.bag /swarm_drones/swarm_frame \
         /swarm_drones/swarm_frame_predict \
         /swarm_loop/loop_connection \
+        /swarm_detection/swarm_detected_raw \
+        /swarm_drones/swarm_drone_fused \
+        /swarm_drones/swarm_drone_fused_relative \
+        /swarm_drones/node_detected \
         /SwarmNode0/pose \
         /SwarmNode1/pose \
         /SwarmNode2/pose \
