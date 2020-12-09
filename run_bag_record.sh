@@ -59,7 +59,9 @@ then
         /SwarmNode2/pose \
         /SwarmNode3/pose \
         /SwarmNode4/pose \
-        /SwarmNode5/pose &>$LOG_PATH/log_bag.txt &
+        /SwarmNode5/pose \
+        /vins_estimator/odometry \
+        /vins_estimator/keyframe_pose  &>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
 fi
@@ -79,11 +81,11 @@ then
         /SwarmNode2/pose \
         /SwarmNode3/pose \
         /SwarmNode4/pose \
+        /SwarmNode5/pose \
         /swarm_loop/remote_frame_desc \
         /vins_estimator/flattened_gray \
         /vins_estimator/odometry \
-        /vins_estimator/keyframe_pose \
-        /SwarmNode5/pose &>$LOG_PATH/log_bag.txt &
+        /vins_estimator/keyframe_pose &>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
 fi
