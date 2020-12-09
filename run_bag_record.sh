@@ -64,6 +64,30 @@ then
     echo "rosbag:"$! > $BAG_PID_FILE
 fi
 
+if [ $RECORD_BAG -eq 5 ]
+then
+    echo "Record bag for swarm localization and swarm loop"
+    $RECORD -o /ssd/bags/swarm_local.bag /swarm_drones/swarm_frame \
+        /swarm_drones/swarm_frame_predict \
+        /swarm_loop/loop_connection \
+        /swarm_detection/swarm_detected_raw \
+        /swarm_drones/swarm_drone_fused \
+        /swarm_drones/swarm_drone_fused_relative \
+        /swarm_drones/node_detected \
+        /SwarmNode0/pose \
+        /SwarmNode1/pose \
+        /SwarmNode2/pose \
+        /SwarmNode3/pose \
+        /SwarmNode4/pose \
+        /swarm_loop/remote_frame_desc \
+        /vins_estimator/flattened_gray \
+        /vins_estimator/odometry \
+        /vins_estimator/keyframe_pose \
+        /SwarmNode5/pose &>$LOG_PATH/log_bag.txt &
+
+    echo "rosbag:"$! > $BAG_PID_FILE
+fi
+
 echo "DOCKER START OK;"
 chmod a+rw $BAG_PID_FILE
 chown dji $LOG_PATH/log_bag.txt
