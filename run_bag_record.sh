@@ -6,7 +6,7 @@ BAG_PID_FILE=/home/dji/swarm_log_latest/pid_bag.txt
 LOG_PATH=/home/dji/swarm_log_latest
 mkdir -p /ssd/bags/
 RECORD=/opt/ros/melodic/lib/rosbag/record
-ARGS= -b 4096
+ARGS="--buffsize 4096"
 
 source $CONFIG_PATH/configs.sh
 source /home/dji/Swarm_Docker/start_configs.sh
