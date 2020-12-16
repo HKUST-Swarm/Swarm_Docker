@@ -4,7 +4,11 @@ source /root/Swarm_Docker/start_configs.sh
 source "/root/swarm_ws/devel/setup.bash"
 
 /root/Swarm_Docker/run_ssh.sh
-    
+if [ $START_VO -eq 1 ]
+then
+    /root/Swarm_Docker/run_nodelet_manager.sh
+fi
+
 if [ $START_UWB_COMM -eq 1 ] 
 then
     /root/Swarm_Docker/run_uwb_comm.sh
