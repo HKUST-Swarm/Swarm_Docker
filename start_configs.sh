@@ -49,37 +49,6 @@ then
     START_SWARM_LOOP=1
 fi
 
-if [ $SWARM_START_MODE -eq 8 ]
-then
-    echo "Will start Control with VICON odom and disable before"
-    START_CONTROL=1
-    START_UWB_VICON=1
-    START_DJISDK=1
-    USE_VICON_CTRL=1
-
-    START_CAMERA=0
-    START_UWB_COMM=0
-    START_UWB_FUSE=0
-    START_VO=0
-    START_CAMERA_SYNC=0
-fi
-
-if [ $SWARM_START_MODE -eq 9 ]
-then
-    echo "Use for record bag for dl"
-    START_CONTROL=0
-    START_UWB_VICON=0
-    START_DJISDK=1
-    USE_VICON_CTRL=1
-
-    START_CAMERA=1
-    START_UWB_COMM=1
-    START_UWB_FUSE=0
-    START_VO=0
-    START_CAMERA_SYNC=0
-
-fi
-
 if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]  ||  [ $START_CONTROL -eq 1  ] || [ $USE_DJI_IMU -eq 1 ]
 then
     export START_DJISDK=1

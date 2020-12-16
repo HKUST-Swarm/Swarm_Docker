@@ -22,12 +22,12 @@ then
         /SwarmNode3/pose \
         /SwarmNode4/pose \
         /SwarmNode5/pose \
-	/dji_sdk_1/dji_sdk/imu \
-	/uwb_node/remote_nodes \
-	/uwb_node/time_ref \
+	    /dji_sdk_1/dji_sdk/imu \
+	    /uwb_node/remote_nodes \
+	    /uwb_node/time_ref \
         /uwb_node/incoming_broadcast_data \
-	/stereo/left/image_raw \
-	/stereo/right/image_raw &>$LOG_PATH/log_bag.txt &
+	    /stereo/left/image_compressed \
+	    /stereo/right/image_compressed &>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
 
