@@ -26,6 +26,7 @@ then
         echo "Will use VICON for position controller"
         USE_VICON_CTRL=1
         START_UWB_COMM=1
+        START_CONTROL=1
     fi
 fi
 
