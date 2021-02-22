@@ -50,6 +50,18 @@ then
     /bin/sleep 30
     echo "Image ready start VO"
     /root/Swarm_Docker/run_vo.sh
+else
+    if [ $PTGREY_NODELET -eq 1 ]
+    then
+        echo "Not start vo, start nodelet manager for stereo-nodelet instead"
+        rosrun nodelet nodelet manager __name:=swarm_manager --no-bond &> $LOG_PATH/log_camera.txt &
+        roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
+    fi
+fi
+
+if [ $USE_VICON_CTRL -eq 1 ]
+then
+    roslaunch pos_vel_mocap odometry_emulator.launch self_id:=$DRONE_ID &> $LOG_PATH/log_vicon.txt &
 fi
 
 roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt &

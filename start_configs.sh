@@ -8,7 +8,6 @@ export START_CAMERA_SYNC=0
 export START_UWB_FUSE=0
 export START_DJISDK=1
 export START_VO=0
-export START_UWB_VICON=0
 export USE_VICON_CTRL=0
 export USE_DJI_IMU=0
 export START_SWARM_LOOP=0
@@ -16,17 +15,23 @@ export ROS_MASTER_URI=http://localhost:11311
 
 if [ $SWARM_START_MODE -ge 1 ]
 then
-    echo "Will start VO"
-    START_VO=1
     START_CAMERA_SYNC=1
     if [ $CAM_TYPE -eq 3 ]
     then
         USE_DJI_IMU=1
     fi
+
+    if [ $SWARM_START_MODE -eq 1 ]
+    then 
+        echo "Will use VICON for position controller"
+        USE_VICON_CTRL=1
+        START_UWB_COMM=1
+    fi
 fi
 
 if [ $SWARM_START_MODE -ge 2 ]
 then
+    START_VO=1
     echo "Will start Control"
     START_CONTROL=1
 fi

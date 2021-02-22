@@ -37,12 +37,6 @@ fi
 
 #UWB
 
-if [ $START_UWB_VICON -eq 1 ]
-then
-    echo "Start UWB VO"
-    roslaunch mocap_optitrack mocap_uwbclient.launch &> $LOG_PATH/log_uwb_mocap.txt 
-fi
-
 if [ $START_UWB_COMM -eq 1 ]
 then
     roslaunch localization_proxy uwb_comm.launch &> $LOG_PATH/log_comm.txt &

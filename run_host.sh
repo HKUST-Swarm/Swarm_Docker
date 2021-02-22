@@ -38,23 +38,13 @@ then
     fi
 fi
 
-
-if [ $START_UWB_VICON -eq 1 ]
-then
-    echo "START INF UWB ROS"
-    taskset -c 1 roslaunch inf_uwb_ros uwb.launch &> $LOG_PATH/log_uwb.txt &
-    echo "SWARM_INF_UWB:"$! >> $PID_FILE
-
-    echo "Start UWB VO"
-    nvidia-docker exec -d swarm /ros_entrypoint.sh "/root/Swarm_Docker/run_uwb_vicon.sh"
-fi
-
 if [ $START_UWB_COMM -eq 1 ]
 then
     echo "Start UWB COMM"
     taskset -c 1 roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
     echo "UWB NODE:"$! >> $PID_FILE
 fi
+
 
 
 if [ $START_CAMERA -eq 1 ]
