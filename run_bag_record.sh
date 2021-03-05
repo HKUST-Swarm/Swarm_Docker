@@ -56,6 +56,16 @@ then
         /swarm_drones/est_drone_5_path \
         /swarm_loop/remote_frame_desc \
         /vins_estimator/odometry \
+        /planning/bspline \
+        /planning/goal \
+        /planning/new \
+        /planning/pos_cmd \
+        /planning/position_cmd_vis \
+        /planning/replan \
+        /planning/swarm_traj \
+        /planning/swarm_traj_recv \
+        /planning/swarm_traj_send \
+        /planning/travel_traj \
         /vins_estimator/keyframe_pose  &>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
@@ -86,8 +96,18 @@ then
         /vins_estimator/odometry \
         /vins_estimator/imu_propagate \
         /vins_estimator/flattened_raw \
-	/uwb_node/remote_nodes \
-	/uwb_node/time_ref \
+        /planning/bspline \
+        /planning/goal \
+        /planning/new \
+        /planning/pos_cmd \
+        /planning/position_cmd_vis \
+        /planning/replan \
+        /planning/swarm_traj \
+        /planning/swarm_traj_recv \
+        /planning/swarm_traj_send \
+        /planning/travel_traj \
+	    /uwb_node/remote_nodes \
+	    /uwb_node/time_ref \
         /uwb_node/incoming_broadcast_data \
         /vins_estimator/keyframe_pose &>$LOG_PATH/log_bag.txt &
 
