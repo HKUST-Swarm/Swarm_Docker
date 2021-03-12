@@ -41,7 +41,7 @@ fi
 if [ $START_UWB_COMM -eq 1 ]
 then
     echo "Start UWB COMM"
-    taskset -c 1 roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
+    roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
     echo "UWB NODE:"$! >> $PID_FILE
 fi
 
