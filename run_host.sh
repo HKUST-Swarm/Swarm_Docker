@@ -2,6 +2,7 @@
 CONFIG_PATH=/home/dji/SwarmConfig
 source /home/dji/Swarm_Docker/start_configs.sh
 source "/home/dji/swarm_ws/devel/setup.bash"
+sudo rm -rf /root/.ros/log
 
 echo "Enabling chicken blood mode"
 sudo /usr/sbin/nvpmodel -m0
