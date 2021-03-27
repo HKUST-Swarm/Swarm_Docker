@@ -28,7 +28,7 @@ echo "START SDK" $START_DJISDK
 if [ $START_DJISDK -eq 1 ]
 then
     echo "dji_sdk start"
-    taskset -c 2 roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
+    nice --20 roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
     echo "DJISDK:"$! >> $PID_FILE
     sleep 5
 
