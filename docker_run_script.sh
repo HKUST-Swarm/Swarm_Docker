@@ -47,15 +47,21 @@ fi
 
 if [ $START_VO -eq 1 ]
 then
-    /bin/sleep 30
+    if [ $PTGREY_NODELET -eq 0 ]
+    then
+        /bin/sleep 30
+    fi
     echo "Image ready start VO"
     /root/Swarm_Docker/run_vo.sh
 else
     if [ $PTGREY_NODELET -eq 1 ]
     then
-        echo "Not start vo, start nodelet manager for stereo-nodelet instead"
-        rosrun nodelet nodelet manager __name:=swarm_manager --no-bond &> $LOG_PATH/log_camera.txt &
-        roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
+        if [ $CAM_TYPE -eq 0 ]
+        then
+            echo "Not start vo, start nodelet manager for stereo-nodelet instead"
+            rosrun nodelet nodelet manager __name:=/swarm_manager --no-bond &> $LOG_PATH/log_camera.txt &
+            roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
+        fi
     fi
 fi
 
