@@ -26,12 +26,6 @@ then
     /root/Swarm_Docker/run_swarmloop.sh
 fi
 
-if [ $START_PLAN -eq 1 ]
-then
-    echo "start planner"
-    /root/Swarm_Docker/run_plan.sh
-fi
-
 if [ $START_UWB_FUSE -eq 1 ]
 then
     echo "Start swarm detector"
@@ -70,7 +64,10 @@ then
     roslaunch pos_vel_mocap odometry_emulator.launch self_id:=$DRONE_ID &> $LOG_PATH/log_vicon.txt &
 fi
 
-roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt &
+if [ $USE_MOCAP -eq 1 ]
+then
+    roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt &
+fi
 
 while [ true ]
 do

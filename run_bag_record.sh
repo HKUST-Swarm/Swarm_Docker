@@ -12,6 +12,35 @@ source $CONFIG_PATH/configs.sh
 source /home/dji/Swarm_Docker/start_configs.sh
 source "/home/dji/swarm_ws/devel/setup.bash"
 
+if [ $RECORD_BAG -eq 0 ]
+then
+    echo "Record raw data for swarm localization"
+    $RECORD $ARGS -o /ssd/bags/swarm_local_raw.bag \
+        /SwarmNode0/pose \
+        /SwarmNode1/pose \
+        /SwarmNode2/pose \
+        /SwarmNode3/pose \
+        /SwarmNode4/pose \
+        /SwarmNode5/pose \
+	/dji_sdk_1/dji_sdk/imu \
+	/uwb_node/remote_nodes \
+	/uwb_node/time_ref \
+        /uwb_node/incoming_broadcast_data \
+	/stereo/left/image_raw \
+	/stereo/right/image_raw \
+	/camera/infra1/image_rect_raw \
+	/camera/infra2/image_rect_raw \
+	/camera/infra1/camera_info \
+	/camera/infra2/camera_info \
+	/camera/depth/image_rect_raw \
+	/camera/depth/camera_info \
+	&>$LOG_PATH/log_bag.txt &
+
+    echo "rosbag:"$! > $BAG_PID_FILE
+
+fi
+
+
 if [ $RECORD_BAG -eq 1 ]
 then
     echo "Record raw data for swarm localization"
@@ -22,18 +51,25 @@ then
         /SwarmNode3/pose \
         /SwarmNode4/pose \
         /SwarmNode5/pose \
-	    /dji_sdk_1/dji_sdk/imu \
-	    /uwb_node/remote_nodes \
-	    /uwb_node/time_ref \
+	/dji_sdk_1/dji_sdk/imu \
+	/uwb_node/remote_nodes \
+	/uwb_node/time_ref \
         /uwb_node/incoming_broadcast_data \
-	    /stereo/left/image_compressed \
-	    /stereo/right/image_compressed &>$LOG_PATH/log_bag.txt &
+	/stereo/left/image_compressed \
+	/stereo/right/image_compressed \
+	/camera/infra1/image_rect_raw/compressed \
+	/camera/infra2/image_rect_raw/compressed \
+	/camera/infra1/camera_info \
+	/camera/infra2/camera_info \
+	/camera/depth/image_rect_raw \
+	/camera/depth/camera_info \
+	&>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
 
 fi
 
-if [ $RECORD_BAG -eq 4 ]
+if [ $RECORD_BAG -eq 2 ]
 then
     echo "Record bag for swarm localization"
     $RECORD $ARGS -o /ssd/bags/swarm_local.bag /swarm_drones/swarm_frame \
