@@ -20,13 +20,13 @@ then
     /root/Swarm_Docker/run_swarm_localization.sh
 fi
 
-if [ $START_SWARM_LOOP -eq 1 ]
+if [ $ENABLE_LOOP -eq 1 ]
 then
     echo "Will start swarm loop"
     /root/Swarm_Docker/run_swarmloop.sh
 fi
 
-if [ $START_UWB_FUSE -eq 1 ]
+if [ $START_UWB_FUSE -eq 1 ] && [ $ENABLE_DETECTION -eq 1 ]
 then
     echo "Start swarm detector"
    /root/Swarm_Docker/run_swarm_detection.sh
@@ -57,6 +57,14 @@ else
             roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
         fi
     fi
+fi
+
+if [ $START_PLAN -eq 1 ]
+then
+
+    /bin/sleep 30
+    echo "Start FastPlanner"
+    roslaunch exploration_manager swarm_exploration_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &
 fi
 
 if [ $USE_VICON_CTRL -eq 1 ]

@@ -113,6 +113,7 @@ then
     $RECORD $ARGS -o /ssd/bags/swarm_local.bag /swarm_drones/swarm_frame \
         /swarm_drones/swarm_frame_predict \
         /swarm_loop/loop_connection \
+	/swarm_loop/keyframe \
         /swarm_drones/swarm_drone_fused \
         /swarm_drones/swarm_drone_fused_relative \
         /swarm_drones/node_detected \

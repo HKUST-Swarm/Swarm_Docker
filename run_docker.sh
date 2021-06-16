@@ -50,9 +50,10 @@ if [ $EDIT -eq 1 ]; then
     sudo xhost +si:localuser:root
     nvidia-docker run \
             -v /home/dji/Swarm_Docker/:/root/Swarm_Docker/ \
-	    -v /root/.ros/log:/root/.ros/log \
+	        -v /root/.ros/log:/root/.ros/log \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
+            -v /home/dji:/home/dji \
             -v /ssd:/ssd \
             -v /usr/include/:/usr/include/ \
             -v /etc/alternatives/:/etc/alternatives/ \
