@@ -102,8 +102,8 @@ then
         /planning/swarm_traj \
         /planning/swarm_traj_recv \
         /planning/swarm_traj_send \
-        /vins_estimator/keyframe_pose \ 
-        /sdf_map/occupancy_all_$DRONE_ID \ 
+        /vins_estimator/keyframe_pose \
+        /sdf_map/occupancy_all_$DRONE_ID \
         /sdf_map/occupancy_local_$DRONE_ID \
         /planning_vis/trajectory_$DRONE_ID \
         /planning/travel_traj_$DRONE_ID \
