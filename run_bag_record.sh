@@ -91,6 +91,7 @@ then
         /swarm_drones/est_drone_4_path \
         /swarm_drones/est_drone_5_path \
         /swarm_loop/remote_frame_desc \
+        /swarm_loop/keyframe \
         /vins_estimator/odometry \
         /planning/bspline \
         /planning/goal \
@@ -101,8 +102,16 @@ then
         /planning/swarm_traj \
         /planning/swarm_traj_recv \
         /planning/swarm_traj_send \
-        /planning/travel_traj \
-        /vins_estimator/keyframe_pose  &>$LOG_PATH/log_bag.txt &
+        /vins_estimator/keyframe_pose \ 
+        /sdf_map/occupancy_all_$DRONE_ID \ 
+        /sdf_map/occupancy_local_$DRONE_ID \
+        /planning_vis/trajectory_$DRONE_ID \
+        /planning/travel_traj_$DRONE_ID \
+        /planning_vis/frontier_$DRONE_ID \
+        /planning/position_cmd_vis_$DRONE_ID \
+        /planning_vis/viewpoints_$DRONE_ID \
+        /planning/pos_cmd_$DRONE_ID \
+        &>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
 fi
