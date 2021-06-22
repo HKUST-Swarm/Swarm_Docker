@@ -78,6 +78,7 @@ then
         /swarm_detection/swarm_detected_raw \
         /swarm_drones/swarm_drone_fused \
         /swarm_drones/swarm_drone_fused_relative \
+        /swarm_drones/swarm_drone_basecoor \
         /swarm_drones/node_detected \
         /SwarmNode0/pose \
         /SwarmNode1/pose \
@@ -125,6 +126,7 @@ then
 	/swarm_loop/keyframe \
         /swarm_drones/swarm_drone_fused \
         /swarm_drones/swarm_drone_fused_relative \
+        /swarm_drones/swarm_drone_basecoor \
         /swarm_drones/node_detected \
         /SwarmNode0/pose \
         /SwarmNode1/pose \
