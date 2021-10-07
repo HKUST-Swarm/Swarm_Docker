@@ -22,20 +22,32 @@ sudo ln -s /root/.ros/log/latest $LOG_PATH
 PID_FILE=/home/dji/swarm_log_latest/pids.txt
 touch $PID_FILE
 
-sleep 5
-echo "START SDK" $START_DJISDK 
-
-if [ $START_DJISDK -eq 1 ]
+if [ $FC_TYPE -eq 0 ]
 then
-    echo "dji_sdk start"
-    nice --20 roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_dji_sdk.txt &
-    echo "DJISDK:"$! >> $PID_FILE
     sleep 5
-
-    if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]
+    echo "START DJISDK" $START_FC_SDK 
+    if [ $START_FC_SDK -eq 1 ]
     then
-        echo "Start trigger..."
-        python /home/dji/Swarm_Docker/djisdk_sync_helper.py
+        echo "dji_sdk start"
+        nice --20 roslaunch dji_sdk sdk.launch  &> $LOG_PATH/log_fc_sdk.txt &
+        echo "DJISDK:"$! >> $PID_FILE
+        sleep 5
+
+        if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]
+        then
+            echo "Start trigger..."
+            python /home/dji/Swarm_Docker/djisdk_sync_helper.py
+        fi
+    fi
+else
+    sleep 5
+    echo "START MAVROS" $START_FC_SDK 
+    if [ $START_FC_SDK -eq 1 ]
+    then
+        echo "dji_sdk start"
+        nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp://@$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
+        echo "DJISDK:"$! >> $PID_FILE
+        sleep 5
     fi
 fi
 

@@ -43,7 +43,7 @@ then
     echo "SWARM_UWB_COMM:"$! >> $PID_FILE
 fi
 
-if [ $START_UWB_FUSE -eq 1 ]
+if [ $START_SWARM_LOCALIZATION -eq 1 ]
 then
 
     taskset -c 5-6 roslaunch swarm_localization local-5-drone.launch &> $LOG_PATH/log_swarm.txt &

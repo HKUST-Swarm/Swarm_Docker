@@ -14,7 +14,7 @@ then
     /root/Swarm_Docker/run_uwb_comm.sh
 fi
 
-if [ $START_UWB_FUSE -eq 1 ]
+if [ $START_SWARM_LOCALIZATION -eq 1 ]
 then
     echo "Start UWB fuse"
     /root/Swarm_Docker/run_swarm_localization.sh
@@ -26,7 +26,7 @@ then
     /root/Swarm_Docker/run_swarmloop.sh
 fi
 
-if [ $START_UWB_FUSE -eq 1 ] && [ $ENABLE_DETECTION -eq 1 ]
+if [ $START_SWARM_LOCALIZATION -eq 1 ] && [ $ENABLE_DETECTION -eq 1 ]
 then
     echo "Start swarm detector"
    /root/Swarm_Docker/run_swarm_detection.sh
