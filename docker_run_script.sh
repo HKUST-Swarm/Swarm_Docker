@@ -16,25 +16,25 @@ fi
 
 if [ $START_SWARM_LOCALIZATION -eq 1 ]
 then
-    echo "Start UWB fuse"
+    echo "Start UWB fuse."
     /root/Swarm_Docker/run_swarm_localization.sh
 fi
 
 if [ $ENABLE_LOOP -eq 1 ]
 then
-    echo "Will start swarm loop"
+    echo "Will start swarm loop."
     /root/Swarm_Docker/run_swarmloop.sh
 fi
 
 if [ $START_SWARM_LOCALIZATION -eq 1 ] && [ $ENABLE_DETECTION -eq 1 ]
 then
-    echo "Start swarm detector"
+    echo "Start swarm detector."
    /root/Swarm_Docker/run_swarm_detection.sh
 fi
 
 if [ $START_CONTROL -eq 1 ]
 then
-    echo "Start CONTROL (Drone cmd only)"
+    echo "Start control in Docker."
     /root/Swarm_Docker/run_control.sh
 fi
 
@@ -45,14 +45,14 @@ then
     then
         /bin/sleep 30
     fi
-    echo "Image ready start VO"
+    echo "Camera driver ready. Starting VO."
     /root/Swarm_Docker/run_vo.sh
 else
     if [ $PTGREY_NODELET -eq 1 ]
     then
         if [ $CAM_TYPE -eq 0 ]
         then
-            echo "Not start vo, start nodelet manager for stereo-nodelet instead"
+            echo "No start nodelet manager for stereo-nodelet instead"
             rosrun nodelet nodelet manager __name:=/swarm_manager --no-bond &> $LOG_PATH/log_camera.txt &
             roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
         fi
@@ -61,10 +61,7 @@ fi
 
 if [ $START_PLAN -eq 1 ]
 then
-
-    /bin/sleep 30
-    echo "Start FastPlanner"
-    roslaunch exploration_manager swarm_exploration_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &
+    /root/Swarm_Docker/run_planning.sh
 fi
 
 if [ $USE_VICON_CTRL -eq 1 ]
@@ -72,7 +69,7 @@ then
     roslaunch pos_vel_mocap odometry_emulator.launch self_id:=$DRONE_ID &> $LOG_PATH/log_vicon.txt &
 fi
 
-if [ $USE_MOCAP -eq 1 ]
+if [ $USE_VICON -eq 1 ]
 then
     roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt &
 fi
@@ -80,7 +77,7 @@ fi
 while [ true ]
 do
     while true; do
-        for N in {1..10}
+        for N in {1..11}
         do
             ping 10.10.1.$N -c 3
         done

@@ -66,6 +66,7 @@ then
     if [ $CAM_TYPE -eq 0 ]
     then
         echo "Will use pointgrey Camera"
+        sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'
         roslaunch ptgrey_reader stereo.launch is_sync:=false &> $LOG_PATH/log_camera.txt &
         PG_PID=$!
         /bin/sleep 5
