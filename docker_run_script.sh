@@ -69,7 +69,7 @@ then
     roslaunch pos_vel_mocap odometry_emulator.launch self_id:=$DRONE_ID &> $LOG_PATH/log_vicon.txt &
 fi
 
-if [ $USE_VICON -eq 1 ]
+if [ $USE_VICON_CTRL -eq 1 ] || [ $USE_VICON -eq 1 ]
 then
     roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt &
 fi

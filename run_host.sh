@@ -33,7 +33,7 @@ then
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
 
-        if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]
+        if [ $START_CAMERA -eq 1 ] && [ $CAM_TYPE -eq 0  ]
         then
             echo "Start trigger..."
             python /home/dji/Swarm_Docker/djisdk_sync_helper.py

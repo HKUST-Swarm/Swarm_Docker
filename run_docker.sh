@@ -80,13 +80,6 @@ elif [ $RUN -eq 1 ]; then
 
     echo "Start swarm with MODE" $2
 
-    if [ $SWARM_START_MODE -ge 0 ]
-    then
-        echo "Will start docker.."
-    else
-        exit 0
-    fi
-
     if [ $HOST -eq 1 ] 
     then
         echo "Start host program"
