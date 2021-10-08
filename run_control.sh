@@ -13,6 +13,3 @@ nice --20 roslaunch drone_position_control pos_control.launch &> $LOG_PATH/log_d
 echo "Start SwarmPilot"
 roslaunch swarm_pilot swarm_pilot.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_swarm_pilot.txt &
 # echo "swarm_pilot:"$! >> $PID_FILE
-
-echo "Start FastPlanner"
-roslaunch plan_manage run_single_drone_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &

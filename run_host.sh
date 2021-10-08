@@ -42,7 +42,7 @@ fi
 if [ $START_UWB_COMM -eq 1 ]
 then
     echo "Start UWB COMM"
-    roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt &
+    roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt self_id:=$DRONE_ID &
     echo "UWB NODE:"$! >> $PID_FILE
 fi
 
@@ -67,14 +67,15 @@ then
         fi
     fi
 
-    if [ $CAM_TYPE -eq 3 ]
+    if [ $CAM_TYPE -eq 1 ]
     then
-        echo "Will use realsense Camera"
-        taskset -c 0,1  roslaunch realsense2_camera rs_camera.launch  &> $LOG_PATH/log_camera.txt &
-        echo "REALSENSE:"$! >> $PID_FILE
-
-        /bin/sleep 10
-        echo "writing camera config"
+        if [ $PTGREY_NODELET -eq 0 ]
+	    then
+       	    echo "Will use realsense Camera in host"
+	        roslaunch realsense2_camera rs_camera.launch  &> $LOG_PATH/log_camera.txt &
+            echo "REALSENSE:"$! >> $PID_FILE
+       	    /bin/sleep 10
+	    fi
     fi
 fi
 

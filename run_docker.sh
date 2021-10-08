@@ -46,8 +46,6 @@ while getopts "ehsrdpu" opt; do
     esac
 done
 
- #-v /dev:/dev \
-            #--privileged \
 if [ $EDIT -eq 1 ]; then
     sudo xhost +si:localuser:root
     nvidia-docker run \
@@ -55,10 +53,10 @@ if [ $EDIT -eq 1 ]; then
 	        -v /root/.ros/log:/root/.ros/log \
             -v /home/dji/SwarmConfig:/home/dji/SwarmConfig \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
+            -v /home/dji:/home/dji \
             -v /ssd:/ssd \
             -v /usr/include/:/usr/include/ \
             -v /etc/alternatives/:/etc/alternatives/ \
-            -v /dev/ttyUSB0:/dev/ttyUSB0 \
             -v /ssd/swarm_ws_build_docker:/root/swarm_ws/build \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
@@ -69,7 +67,7 @@ if [ $EDIT -eq 1 ]; then
             --user 0 \
             --net=host \
             --rm \
-            --privileged -v /dev/bus/usb:/dev/bus/usb \
+            --privileged -v /dev/:/dev/ \
             -it ${DOCKER_IMAGE} \
             /bin/zsh
 
@@ -116,7 +114,7 @@ elif [ $RUN -eq 1 ]; then
             --net=host \
             --name=swarm \
             --user 0 \
-            --privileged -v /dev/bus/usb:/dev/bus/usb \
+            --privileged -v /dev/:/dev/ \
             -d \
             --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
             ${DOCKER_IMAGE} \
