@@ -26,6 +26,7 @@ then
         USE_VICON_CTRL=1
         START_UWB_COMM=1
         START_CONTROL=1
+        USE_MOCAP=1
     fi
 fi
 
