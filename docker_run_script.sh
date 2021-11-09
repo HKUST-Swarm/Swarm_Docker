@@ -4,6 +4,14 @@ source /root/Swarm_Docker/start_configs.sh
 source "/root/swarm_ws/devel/setup.bash"
 
 /root/Swarm_Docker/run_ssh.sh
+
+if [ $START_UWB_COMM -eq 1 ]
+then
+    echo "Start UWB COMM"
+    nice --20 roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt self_id:=$DRONE_ID &
+    echo "UWB NODE:"$! >> $PID_FILE
+fi
+
 if [ $START_VO -eq 1 ]
 then
     /root/Swarm_Docker/run_nodelet_manager.sh
@@ -73,10 +81,17 @@ if [ $START_PLAN -eq 1 ]
 then
 
     /bin/sleep 30
-    echo "Start FastPlanner"
-    # roslaunch exploration_manager swarm_exploration_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &
+    echo "Start FastPlanner for Swarm"
     roslaunch plan_manage run_single_drone_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &
 
+fi
+
+if [ $START_PLAN -eq 2 ]
+then
+
+    /bin/sleep 30
+    echo "Start Expo"
+    roslaunch exploration_manager swarm_exploration_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &
 fi
 
 while [ true ]
