@@ -39,15 +39,6 @@ then
     fi
 fi
 
-if [ $START_UWB_COMM -eq 1 ]
-then
-    echo "Start UWB COMM"
-    nice --20 roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt self_id:=$DRONE_ID &
-    echo "UWB NODE:"$! >> $PID_FILE
-fi
-
-
-
 if [ $START_CAMERA -eq 1 ]
 then
     echo "Trying to start camera driver"
