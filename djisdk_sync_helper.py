@@ -12,7 +12,7 @@ if __name__ == "__main__":
     
     ret = 0
     while ret == 0:
-        ret = call_hardsyc(20, 0)
+        ret = call_hardsyc(16, 0)
         time.sleep(0.1)
     
     print("Successful called hardsyc...exiting helper")
