@@ -80,6 +80,7 @@ then
         /swarm_drones/swarm_drone_fused_relative \
         /swarm_drones/swarm_drone_basecoor \
         /swarm_drones/node_detected \
+        /swarm_drones/node_detected_6d \
         /SwarmNode0/pose \
         /SwarmNode1/pose \
         /SwarmNode2/pose \
