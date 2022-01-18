@@ -82,7 +82,7 @@ elif [ $RUN -eq 1 ]; then
 
     if [ $SWARM_START_MODE -ge 0 ]
     then
-        echo "Will start docker.."
+        echo "Will start docker.." ${DOCKER_IMAGE}
     else
         exit 0
     fi
