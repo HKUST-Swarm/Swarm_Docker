@@ -13,3 +13,7 @@ nice --20 roslaunch drone_position_control pos_control.launch &> $LOG_PATH/log_d
 echo "Start SwarmPilot"
 roslaunch swarm_pilot swarm_pilot.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_swarm_pilot.txt &
 # echo "swarm_pilot:"$! >> $PID_FILE
+
+if [ ! -z "$NET_STATS" ] && [ $NET_STATS -eq 1 ]
+    rosrun swarm_loop swarm_loop_net_tester _self_id:=$DRONE_ID &> $LOG_PATH/log_network_stats.txt &
+then
