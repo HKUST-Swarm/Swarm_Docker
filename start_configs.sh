@@ -11,6 +11,7 @@ export START_VO=0
 export USE_VICON_CTRL=0
 export USE_DJI_IMU=0
 export ROS_MASTER_URI=http://localhost:11311
+export START_NETWORK_TESTER=0
 
 if [ $SWARM_START_MODE -ge 1 ]
 then
@@ -49,8 +50,15 @@ then
     START_UWB_FUSE=1
 fi
 
+if [ $SWARM_START_MODE -eq 6 ] 
+then
+    START_VO=0
+    START_NETWORK_TESTER=1
+fi
+
 if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]  ||  [ $START_CONTROL -eq 1  ] || [ $USE_DJI_IMU -eq 1 ]
 then
     export START_DJISDK=1
+    export START_PLAN=0
     echo "Using Ptgrey Camera, USE DJI IMU or using control, will boot dji sdk"
 fi

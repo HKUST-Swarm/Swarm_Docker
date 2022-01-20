@@ -92,10 +92,15 @@ fi
 
 if [ $START_PLAN -eq 2 ]
 then
-
     /bin/sleep 30
     echo "Start Expo"
     roslaunch exploration_manager swarm_exploration_realworld.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_fast_planner.txt &
+fi
+
+
+if [ $START_NETWORK_TESTER -eq 1 ]
+then
+    rosrun swarm_loop swarm_loop_net_tester _self_id:=$DRONE_ID
 fi
 
 while [ true ]
