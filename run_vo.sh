@@ -20,9 +20,9 @@ then
     then
         /bin/sleep 3.0
 	    echo "running realsense in docker"
-        roslaunch realsense2_camera rs_camera.launch external_manager:=true manager:=swarm_manager &> $LOG_PATH/log_camera.txt &
+        roslaunch realsense2_camera rs_camera.launch external_manager:=true manager:=/swarm_manager infra_fps:=$INFRA_FPS  depth_fps:=$DEPTH_FPS&> $LOG_PATH/log_camera.txt &
     fi
-    roslaunch vins pinhole.launch manager:=swarm_manager config_file:=/home/dji/SwarmConfig/realsense/realsense.yaml &> $LOG_PATH/log_vo.txt &
+    roslaunch vins pinhole.launch manager:=/swarm_manager config_file:=/home/dji/SwarmConfig/realsense/realsense.yaml &> $LOG_PATH/log_vo.txt &
     #rosrun vins vins_node /home/dji/SwarmConfig/realsense/realsense.yaml &> $LOG_PATH/log_vo.txt &
     sleep 5
 fi

@@ -58,11 +58,15 @@ then
 else
     if [ $PTGREY_NODELET -eq 1 ]
     then
+        echo "Not start vo, start nodelet manager for stereo-nodelet instead"
+        rosrun nodelet nodelet manager __name:=swarm_manager --no-bond &> $LOG_PATH/log_camera.txt &
         if [ $CAM_TYPE -eq 0 ]
         then
-            echo "Not start vo, start nodelet manager for stereo-nodelet instead"
-            rosrun nodelet nodelet manager __name:=swarm_manager --no-bond &> $LOG_PATH/log_camera.txt &
             roslaunch ptgrey_reader stereo-nodelet.launch manager:=swarm_manager is_sync:=true &> $LOG_PATH/log_camera.txt &
+        else
+            /bin/sleep 3.0
+            echo "Start realsense in docker"
+            roslaunch realsense2_camera rs_camera.launch external_manager:=true manager:=/swarm_manager infra_fps:=$INFRA_FPS  depth_fps:=$DEPTH_FPS&> $LOG_PATH/log_camera.txt &
         fi
     fi
 fi
