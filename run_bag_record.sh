@@ -54,7 +54,7 @@ then
 	/dji_sdk_1/dji_sdk/imu \
 	/uwb_node/remote_nodes \
 	/uwb_node/time_ref \
-        /uwb_node/incoming_broadcast_data \
+    /uwb_node/incoming_broadcast_data \
 	/stereo/left/image_compressed \
 	/stereo/right/image_compressed \
 	/camera/infra1/image_rect_raw/compressed \
@@ -62,6 +62,8 @@ then
 	/camera/infra1/camera_info \
 	/camera/infra2/camera_info \
 	/camera/depth/image_rect_raw \
+    /swarm_drones/swarm_network_status \
+    /swarm_loop/drone_network_status \
 	/camera/depth/camera_info \
 	&>$LOG_PATH/log_bag.txt &
 
