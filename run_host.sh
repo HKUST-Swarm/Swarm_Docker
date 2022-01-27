@@ -45,7 +45,8 @@ else
     if [ $START_FC_SDK -eq 1 ]
     then
         echo "dji_sdk start"
-        nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp://@$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
+        # nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp://@$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
+        nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp-pb://@ &> $LOG_PATH/log_fc_sdk.txt &
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
     fi

@@ -10,7 +10,6 @@ if [ $ENABLE_ADHOC -eq 1 ]; then
 fi
 
 if [ $MASTER_CONTROL -eq 1 ]; then
-
     if [ $PULL_DOCKER -eq 1 ]; then
         /bin/bash /home/dji/Swarm_Docker/pull_docker.sh > /home/dji/log.txt
     fi 
