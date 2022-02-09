@@ -34,6 +34,8 @@ then
 	/camera/infra2/camera_info \
 	/camera/depth/image_rect_raw \
 	/camera/depth/camera_info \
+    /camera/color/camera_info \
+    /camera/color/image_raw \
 	&>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
@@ -61,6 +63,8 @@ then
 	/camera/infra2/image_rect_raw/compressed \
 	/camera/infra1/camera_info \
 	/camera/infra2/camera_info \
+    /camera/color/camera_info \
+    /camera/color/image_raw/compressed \
 	/camera/depth/image_rect_raw \
     /swarm_drones/swarm_network_status \
     /swarm_loop/drone_network_status \

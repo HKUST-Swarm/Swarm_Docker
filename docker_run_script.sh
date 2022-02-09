@@ -66,7 +66,10 @@ else
         else
             /bin/sleep 3.0
             echo "Start realsense in docker"
-            roslaunch realsense2_camera rs_camera.launch external_manager:=true manager:=/swarm_manager infra_fps:=$INFRA_FPS  depth_fps:=$DEPTH_FPS&> $LOG_PATH/log_camera.txt &
+            roslaunch realsense2_camera rs_camera.launch external_manager:=true manager:=/swarm_manager \
+            infra_fps:=$INFRA_FPS  depth_fps:=$DEPTH_FPS \
+            enable_color:=$ENABLE_COLOR color_fps:=$COLOR_FPS \
+            &> $LOG_PATH/log_camera.txt &
         fi
     fi
 fi
