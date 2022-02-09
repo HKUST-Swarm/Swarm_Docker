@@ -54,6 +54,9 @@ if [ $SWARM_START_MODE -eq 6 ]
 then
     START_VO=0
     START_NETWORK_TESTER=1
+    ENABLE_LOOP=0
+    START_UWB_FUSE=0
+    START_PLAN=0
 fi
 
 if [ $START_CAMERA -eq 1 ]  && [ $CAM_TYPE -eq 0  ]  ||  [ $START_CONTROL -eq 1  ] || [ $USE_DJI_IMU -eq 1 ]
