@@ -5,9 +5,8 @@ source "/home/dji/swarm_ws/devel/setup.bash"
 sudo rm -rf /root/.ros/log
 
 echo "Enabling chicken blood mode"
-sudo /usr/sbin/nvpmodel -m0
+sudo /usr/sbin/nvpmodel -m8 #For NX, it's model 8
 sudo /usr/bin/jetson_clocks
-/home/dji/Swarm_Docker/run_roscore.sh
 
 LOG_PATH=/home/dji/swarm_log/`date +%F_%T`
 
@@ -21,6 +20,10 @@ sudo ln -s /root/.ros/log/latest $LOG_PATH
 
 PID_FILE=/home/dji/swarm_log_latest/pids.txt
 touch $PID_FILE
+
+#Start roscore
+echo "Starting roscore..."
+/home/dji/Swarm_Docker/run_roscore.sh
 
 if [ $FC_TYPE -eq 0 ]
 then
@@ -44,8 +47,7 @@ else
     echo "START MAVROS" $START_FC_SDK 
     if [ $START_FC_SDK -eq 1 ]
     then
-        echo "dji_sdk start"
-        # nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp://@$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
+        echo "mavros start"
         nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp-pb://@ &> $LOG_PATH/log_fc_sdk.txt &
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
@@ -88,6 +90,16 @@ then
        	    echo "Will use realsense Camera in host"
 	        roslaunch realsense2_camera rs_camera.launch  &> $LOG_PATH/log_camera.txt &
             echo "REALSENSE:"$! >> $PID_FILE
+       	    /bin/sleep 10
+	    fi
+    fi
+
+    if [ $CAM_TYPE -eq 2 ]
+    then
+        if [ $PTGREY_NODELET -eq 0 ]
+	    then
+       	    echo "Will use Arducam"
+            roslaunch arducam_ros arducam.launch &> $LOG_PATH/log_camera.txt &
        	    /bin/sleep 10
 	    fi
     fi

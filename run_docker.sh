@@ -24,7 +24,6 @@ fi
 RUN=0;
 EDIT=0;
 PULL=0;
-HOST=0
 
 while getopts "ehsrdpu" opt; do
     case "$opt" in
@@ -33,7 +32,6 @@ while getopts "ehsrdpu" opt; do
             exit 0
             ;;
         r)  RUN=1
-            HOST=1
             ;;
         e)  EDIT=1
             ;;
@@ -78,16 +76,7 @@ elif [ $RUN -eq 1 ]; then
         export SWARM_START_MODE=$2
     fi
 
-    echo "Start swarm with MODE" $2
-
-    if [ $HOST -eq 1 ] 
-    then
-        echo "Start host program"
-        /home/dji/Swarm_Docker/run_host.sh
-    else
-        echo "Start docker program only"
-    fi
-    
+    echo "Start swarm with MODE" $2   
     echo "Start NVIDIA DOCKER"
     nvidia-docker run -it \
             -v /root/.ros/log/:/root/.ros/log/ \

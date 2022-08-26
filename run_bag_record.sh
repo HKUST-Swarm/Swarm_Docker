@@ -4,7 +4,7 @@
 CONFIG_PATH=/home/dji/SwarmConfig
 BAG_PID_FILE=/home/dji/swarm_log_latest/pid_bag.txt
 LOG_PATH=/home/dji/swarm_log_latest
-mkdir -p /ssd/bags/
+mkdir -p $BAG_PATH/
 RECORD=/opt/ros/melodic/lib/rosbag/record
 ARGS="--buffsize 4096"
 
@@ -15,7 +15,7 @@ source "/home/dji/swarm_ws/devel/setup.bash"
 if [ $RECORD_BAG -eq 0 ]
 then
     echo "Record raw data for swarm localization"
-    $RECORD $ARGS -o /ssd/bags/swarm_local_raw.bag \
+    $RECORD $ARGS -o $BAG_PATH/swarm_local_raw.bag \
         /SwarmNode0/pose \
         /SwarmNode1/pose \
         /SwarmNode2/pose \
@@ -28,6 +28,7 @@ then
         /uwb_node/incoming_broadcast_data \
 	/stereo/left/image_raw \
 	/stereo/right/image_raw \
+    /arducam/image \
 	/camera/infra1/image_rect_raw \
 	/camera/infra2/image_rect_raw \
 	/camera/infra1/camera_info \
@@ -44,7 +45,7 @@ fi
 if [ $RECORD_BAG -eq 1 ]
 then
     echo "Record raw data for swarm localization"
-    $RECORD $ARGS -o /ssd/bags/swarm_local_raw.bag \
+    $RECORD $ARGS -o $BAG_PATH/swarm_local_raw.bag \
         /SwarmNode0/pose \
         /SwarmNode1/pose \
         /SwarmNode2/pose \
@@ -52,6 +53,7 @@ then
         /SwarmNode4/pose \
         /SwarmNode5/pose \
 	/dji_sdk_1/dji_sdk/imu \
+    /mavros/imu/data_raw \
 	/uwb_node/remote_nodes \
 	/uwb_node/time_ref \
         /uwb_node/incoming_broadcast_data \
@@ -63,6 +65,7 @@ then
 	/camera/infra2/camera_info \
 	/camera/depth/image_rect_raw \
 	/camera/depth/camera_info \
+    /arducam/image/compressed \
 	&>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
@@ -72,7 +75,7 @@ fi
 if [ $RECORD_BAG -eq 2 ]
 then
     echo "Record bag for swarm localization"
-    $RECORD $ARGS -o /ssd/bags/swarm_local.bag /swarm_drones/swarm_frame \
+    $RECORD $ARGS -o $BAG_PATH/swarm_local.bag /swarm_drones/swarm_frame \
         /swarm_drones/swarm_frame_predict \
         /swarm_loop/loop_connection \
         /swarm_detection/swarm_detected_raw \
@@ -120,7 +123,7 @@ fi
 if [ $RECORD_BAG -eq 5 ]
 then
     echo "Record bag for swarm localization, raw data for swarm loop and swarm detection"
-    $RECORD $ARGS -o /ssd/bags/swarm_local.bag /swarm_drones/swarm_frame \
+    $RECORD $ARGS -o $BAG_PATH/swarm_local.bag /swarm_drones/swarm_frame \
         /swarm_drones/swarm_frame_predict \
         /swarm_loop/loop_connection \
 	/swarm_loop/keyframe \

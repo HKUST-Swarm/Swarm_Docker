@@ -14,9 +14,19 @@ if [ $MASTER_CONTROL -eq 1 ]; then
         /bin/bash /home/dji/Swarm_Docker/pull_docker.sh > /home/dji/log.txt
     fi 
 
-    if [ $START_DOCKER -eq 1 ]; then
-        /bin/bash /home/dji/Swarm_Docker/run_docker.sh -r >>/home/dji/log.txt &
+    if [ $START_HOST -eq 1 ] 
+    then
+        echo "Start host program"
+        /home/dji/Swarm_Docker/run_host.sh
+    else
+        echo "Start docker program only"
     fi
 
-    echo "start swarmstart" >> /home/dji/log.txt
+    if [ $START_DOCKER -eq 1 ]; then
+        /bin/bash /home/dji/Swarm_Docker/run_docker.sh -r >>/home/dji/log.txt &
+    else 
+        echo "Record bag:", $RECORD_BAG
+        /home/dji/Swarm_Docker/run_bag_record.sh
+    fi
+    echo "Finish swarmstart" >> /home/dji/log.txt
 fi
