@@ -67,7 +67,7 @@ if [ $EDIT -eq 1 ]; then
             --rm \
             --privileged -v /dev/:/dev/ \
             -it ${DOCKER_IMAGE} \
-            /bin/zsh
+            /bin/bash
 
 elif [ $RUN -eq 1 ]; then
 
