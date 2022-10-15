@@ -5,12 +5,17 @@ CONFIG_PATH=/home/dji/SwarmConfig
 BAG_PID_FILE=/home/dji/swarm_log_latest/pid_bag.txt
 LOG_PATH=/home/dji/swarm_log_latest
 mkdir -p $BAG_PATH/
-RECORD=/opt/ros/melodic/lib/rosbag/record
+RECORD=/opt/ros/noetic/lib/rosbag/record
 ARGS="--buffsize 4096"
 
 source $CONFIG_PATH/configs.sh
 source /home/dji/Swarm_Docker/start_configs.sh
 source "/home/dji/swarm_ws/devel/setup.bash"
+if (($# > 0))
+then
+    echo "Record bag in $1 mode"
+    RECORD_BAG=$1
+fi
 
 if [ $RECORD_BAG -eq 0 ]
 then
@@ -44,7 +49,7 @@ fi
 
 if [ $RECORD_BAG -eq 1 ]
 then
-    echo "Record raw data for swarm localization"
+    echo "Record compressed data for swarm localization to $BAG_PATH/swarm_local_raw.bag"
     $RECORD $ARGS -o $BAG_PATH/swarm_local_raw.bag \
         /SwarmNode0/pose \
         /SwarmNode1/pose \

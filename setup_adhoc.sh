@@ -11,7 +11,8 @@ sudo ifconfig wlan0 mtu 1560
 sudo iwconfig wlan0 channel $WIFI_CHANNEL
 sudo iwconfig wlan0 essid 'swarm-mesh-network'
 #sudo ip link set wlan0 up
-sudo iwconfig wlan0 ap 02:72:C5:C8:D1:BE
+# The following line not working on realte
+# sudo iwconfig wlan0 ap 02:72:C5:C8:D1:BE
 sudo ip addr add 10.10.1.$1/24 broadcast 10.10.1.255 dev wlan0
 
 ip route add default via 10.10.1.10 dev wlan0

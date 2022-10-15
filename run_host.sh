@@ -48,7 +48,7 @@ else
     if [ $START_FC_SDK -eq 1 ]
     then
         echo "mavros start"
-        nice --20 rosrun mavros mavros_node _fcu_url:=$FC_TTY:921600 _gcs_url:=udp-pb://@ &> $LOG_PATH/log_fc_sdk.txt &
+        nice --20 roslaunch mavros px4.launch fcu_url:=$FC_TTY:921600 _gcs_url:=$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
         echo "DJISDK:"$! >> $PID_FILE
         sleep 5
     fi
@@ -57,11 +57,9 @@ fi
 if [ $START_UWB_COMM -eq 1 ]
 then
     echo "Start UWB COMM"
-    roslaunch inf_uwb_ros uwb_node.launch &> $LOG_PATH/log_uwb_node.txt self_id:=$DRONE_ID &
+    roslaunch inf_uwb_ros uwb_node.launch self_id:=$DRONE_ID &> $LOG_PATH/log_uwb_node.txt &
     echo "UWB NODE:"$! >> $PID_FILE
 fi
-
-
 
 if [ $START_CAMERA -eq 1 ]
 then
@@ -105,6 +103,11 @@ then
     fi
 fi
 
+
+if [ $START_CONTROL -eq 1 ]  &&  [ $START_DOCKER -eq 0 ]
+then
+    /home/dji/Swarm_Docker/run_control.sh
+fi
 
 if [ $START_ROSBRIDGE -eq 1 ]
 then
