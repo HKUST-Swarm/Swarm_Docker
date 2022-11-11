@@ -53,9 +53,7 @@ if [ $EDIT -eq 1 ]; then
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             -v /home/dji:/home/dji \
             -v /ssd:/ssd \
-            -v /usr/include/:/usr/include/ \
-            -v /etc/alternatives/:/etc/alternatives/ \
-            -v /ssd/swarm_ws_build_docker:/root/swarm_ws/build \
+            -v /home/dji/models:/root/models \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
@@ -83,8 +81,8 @@ elif [ $RUN -eq 1 ]; then
             -v /ssd:/ssd \
             -v /home/dji:/home/dji \
             -v /home/dji/Swarm_Docker:/root/Swarm_Docker \
-            -v /ssd/swarm_ws_build_docker:/root/swarm_ws/build \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
+            -v /home/dji/models:/root/models \
             --rm \
             --env="DISPLAY" \
             -e LOG_PATH=$LOG_PATH \
