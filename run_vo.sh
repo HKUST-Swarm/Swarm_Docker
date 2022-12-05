@@ -17,7 +17,9 @@ fi
 if [ $CAM_TYPE -eq 1 ]
 then
     /bin/sleep 2.0
-    roslaunch vins pinhole.launch manager:=/swarm_manager config_file:=/home/dji/SwarmConfig/realsense/realsense.yaml &> $LOG_PATH/log_vo.txt &
+    roslaunch d2vins realsense.launch superpoint_model_path:=/root/models/superpoint_v1_dyn_size.onnx \
+        netvlad_model_path:=/root/models/mobilenetvlad_dyn_size.onnx \
+        config:=/root/SwarmConfig/realsense_d435/d435_single.yaml enable_loop:=$ENABLE_LOOP enable_pgo:=$ENABLE_LOOP &> $LOG_PATH/log_vo.txt &
     if [ $PTGREY_NODELET -eq 1 ]
     then
         /bin/sleep 3.0
@@ -26,7 +28,7 @@ then
     fi
 fi
 
-if [ $FC_TYPE -eq 1 ] 
-then
-    roslaunch px4_realsense_bridge bridge.launch  &> $LOG_PATH/vo_bridge.txt &
-fi
+# if [ $FC_TYPE -eq 1 ] 
+# then
+#     roslaunch px4_realsense_bridge bridge.launch  &> $LOG_PATH/vo_bridge.txt &
+# fi

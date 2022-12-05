@@ -43,13 +43,13 @@ then
         fi
     fi
 else
-    sleep 5
     echo "START MAVROS" $START_FC_SDK 
     if [ $START_FC_SDK -eq 1 ]
     then
+        sleep 10
         echo "mavros start"
-        nice --20 roslaunch mavros px4.launch fcu_url:=$FC_TTY:921600 _gcs_url:=$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
-        echo "DJISDK:"$! >> $PID_FILE
+        nice --20 roslaunch mavros px4.launch fcu_url:=$FC_TTY _gcs_url:=$GCS_IP &> $LOG_PATH/log_fc_sdk.txt &
+        echo "MAVROS:"$! >> $PID_FILE
         sleep 5
     fi
 fi
@@ -86,7 +86,7 @@ then
         if [ $PTGREY_NODELET -eq 0 ]
 	    then
        	    echo "Will use realsense Camera in host"
-	        roslaunch realsense2_camera rs_camera.launch  &> $LOG_PATH/log_camera.txt &
+	        roslaunch realsense2_camera rs_camera.launch enable_color:=false &> $LOG_PATH/log_camera.txt &
             echo "REALSENSE:"$! >> $PID_FILE
        	    /bin/sleep 10
 	    fi

@@ -10,5 +10,5 @@
 # bits.
 #
 # By default this script does nothing.
-/bin/bash /home/dji/Swarm_Docker/drone_boot.sh
+/bin/bash /home/dji/Swarm_Docker/drone_boot.sh & 
 exit 0

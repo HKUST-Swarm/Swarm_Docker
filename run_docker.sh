@@ -53,6 +53,7 @@ if [ $EDIT -eq 1 ]; then
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             -v /home/dji:/home/dji \
             -v /ssd:/ssd \
+            -v /home/dji/.ssh:/root/.ssh/ \
             -v /home/dji/models:/root/models \
             -e DISPLAY=$DISPLAY \
             --volume="/etc/group:/etc/group:ro" \
@@ -68,14 +69,7 @@ if [ $EDIT -eq 1 ]; then
             /bin/bash
 
 elif [ $RUN -eq 1 ]; then
-
-
-    if [ "$#" -ge 2 ]; then
-        export SWARM_START_MODE=$2
-    fi
-
-    echo "Start swarm with MODE" $2   
-    echo "Start NVIDIA DOCKER"
+    echo "Start Docker:" ${DOCKER_IMAGE}
     nvidia-docker run -it \
             -v /root/.ros/log/:/root/.ros/log/ \
             -v /ssd:/ssd \
@@ -83,6 +77,7 @@ elif [ $RUN -eq 1 ]; then
             -v /home/dji/Swarm_Docker:/root/Swarm_Docker \
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             -v /home/dji/models:/root/models \
+            -v /home/dji/.ssh:/root/.ssh/ \
             --rm \
             --env="DISPLAY" \
             -e LOG_PATH=$LOG_PATH \

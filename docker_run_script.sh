@@ -1,8 +1,8 @@
 #!/bin/bash
+echo "Start docker_run_script.sh in docker"
 CONFIG_PATH=/home/dji/SwarmConfig
 source /root/Swarm_Docker/start_configs.sh
 source "/root/swarm_ws/devel/setup.bash"
-
 /root/Swarm_Docker/run_ssh.sh
 if [ $START_VO -eq 1 ]
 then

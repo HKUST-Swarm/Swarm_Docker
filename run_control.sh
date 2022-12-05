@@ -10,7 +10,7 @@ then
     nice --20 roslaunch drone_position_control pos_control.launch &> $LOG_PATH/log_drone_position_ctrl.txt &
 else
     echo "Start drone_commander for PX4"
-    nice --20 roslaunch drone_commander commander-px4.launch &> $LOG_PATH/log_drone_commander.txt &
+    nice --20 roslaunch drone_commander commander-px4.launch vo_topic:=/d2vins/imu_propagation &> $LOG_PATH/log_drone_commander.txt &
 fi
 
 echo "Start SwarmPilot"

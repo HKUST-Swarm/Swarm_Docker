@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import rospy
 from sensor_msgs.msg import CameraInfo
 
@@ -46,9 +46,9 @@ if __name__ == "__main__":
     #color_info = rospy.wait_for_message("/camera/color/camera_info", CameraInfo)
 
     rospy.loginfo("Write infra1 to left")
-    write_to_file(infra1_info, "/home/dji/SwarmConfig/realsense/left.yaml")
+    write_to_file(infra1_info, "/home/dji/SwarmConfig/realsense_d435/left.yaml")
     rospy.loginfo("Write infra2 to right")
-    write_to_file(infra2_info, "/home/dji/SwarmConfig/realsense/right.yaml")
+    write_to_file(infra2_info, "/home/dji/SwarmConfig/realsense_d435/right.yaml")
     #rospy.loginfo("Write color")
     #write_to_file(color_info, "/home/dji/SwarmConfig/realsense/color.yaml")
     rospy.loginfo("Finish camera param writing")

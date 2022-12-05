@@ -187,9 +187,10 @@ then
     echo "Compressed Record bag for Realsense data  & omnidirection camera data "
     $RECORD $ARGS -o $BAG_PATH/project.bag /swarm_drones/swarm_frame \
         /arducam/image/compressed \
-        /camera/color/image_raw/compressed \
+        /camera/color/image_raw \
 	/camera/aligned_depth_to_color/image_raw \
-        /camera/imu &>$LOG_PATH/log_bag.txt &
+        /camera/imu \
+        /mavros/imu/data_raw&>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
 fi
