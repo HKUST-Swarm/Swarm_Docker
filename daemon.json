@@ -5,9 +5,8 @@
             "runtimeArgs": []
         }
     },
-    "graph": "/ssd/docker",
     "insecure-registries" : [
 	    "swarm.xuhao1.space:5000",
-	    "143.89.46.144:5000"
+        "192.168.0.101:5000"
     ]
 }

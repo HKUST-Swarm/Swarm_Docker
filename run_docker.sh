@@ -60,7 +60,7 @@ if [ $EDIT -eq 1 ]; then
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-            --name=swarm \
+            --name=${CONTAINER_NAME} \
             --user 0 \
             --net=host \
             --rm \
@@ -87,7 +87,7 @@ elif [ $RUN -eq 1 ]; then
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --net=host \
-            --name=swarm \
+            --name=${CONTAINER_NAME} \
             --user 0 \
             --privileged -v /dev/:/dev/ \
             -d \
@@ -95,7 +95,7 @@ elif [ $RUN -eq 1 ]; then
             ${DOCKER_IMAGE} \
             /root/Swarm_Docker/docker_run_script.sh &
     /bin/sleep 20
-    
+
     echo "Record bag:", $RECORD_BAG
     /home/dji/Swarm_Docker/run_bag_record.sh
 fi
