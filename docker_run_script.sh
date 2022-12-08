@@ -76,10 +76,9 @@ fi
 
 while [ true ]
 do
-    while true; do
-        for N in {1..11}
-        do
-            ping 10.10.1.$N -c 3
-        done
-    done
+    sleep 100
+    # for N in {1..11}
+    # do
+    #     ping 10.10.1.$N -c 3
+    # done
 done

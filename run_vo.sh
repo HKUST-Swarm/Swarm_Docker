@@ -17,9 +17,18 @@ fi
 if [ $CAM_TYPE -eq 1 ]
 then
     /bin/sleep 2.0
+    if [ ! -z "$var" || $D2VINS_MULTI -eq 0 ]
+    then
+    echo "Lauching D2SLAM with single drone and realsense."
     roslaunch d2vins realsense.launch superpoint_model_path:=/root/models/superpoint_v1_dyn_size.onnx \
-        netvlad_model_path:=/root/models/mobilenetvlad_dyn_size.onnx \
+        netvlad_model_path:=/root/models/mobilenetvlad_dyn_size.onnx self_id:=$DRONE_ID \
         config:=/root/SwarmConfig/realsense_d435/d435_single.yaml enable_loop:=$ENABLE_LOOP enable_pgo:=$ENABLE_LOOP &> $LOG_PATH/log_vo.txt &
+    else
+    echo "Lauching D2SLAM with multi drone and realsense."
+    roslaunch d2vins realsense.launch superpoint_model_path:=/root/models/superpoint_v1_dyn_size.onnx \
+        netvlad_model_path:=/root/models/mobilenetvlad_dyn_size.onnx self_id:=$DRONE_ID \
+        config:=/root/SwarmConfig/realsense_d435/d435_multi.yaml enable_loop:=$ENABLE_LOOP enable_pgo:=$ENABLE_LOOP &> $LOG_PATH/log_vo.txt &
+    fi
     if [ $PTGREY_NODELET -eq 1 ]
     then
         /bin/sleep 3.0

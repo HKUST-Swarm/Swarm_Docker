@@ -53,12 +53,8 @@ if [ $EDIT -eq 1 ]; then
             -v /home/dji/SwarmConfig:/root/SwarmConfig \
             -v /home/dji:/home/dji \
             -v /ssd:/ssd \
-            -v /home/dji/.ssh:/root/.ssh/ \
             -v /home/dji/models:/root/models \
             -e DISPLAY=$DISPLAY \
-            --volume="/etc/group:/etc/group:ro" \
-            --volume="/etc/shadow:/etc/shadow:ro" \
-            --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --name=${CONTAINER_NAME} \
             --user 0 \
@@ -67,7 +63,6 @@ if [ $EDIT -eq 1 ]; then
             --privileged -v /dev/:/dev/ \
             -it ${DOCKER_IMAGE} \
             /bin/bash
-
 elif [ $RUN -eq 1 ]; then
     echo "Start Docker:" ${DOCKER_IMAGE}
     nvidia-docker run -it \
