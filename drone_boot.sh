@@ -4,9 +4,11 @@ source /home/dji/SwarmConfig/configs.sh
 source /home/dji/SwarmConfig/drone_private_config.sh
 
 if [ $ENABLE_ADHOC -eq 1 ]; then
-    /home/dji/Swarm_Docker/setup_adhoc.sh $DRONE_ID &
-    echo "Wait 10 for network setup"
+    echo "Wait 10 to setup adhoc"
     /bin/sleep 10
+    /home/dji/Swarm_Docker/setup_adhoc.sh $DRONE_ID &
+    echo "Wait 5 for network setup"
+    /bin/sleep 5
 fi
 
 if [ $MASTER_CONTROL -eq 1 ]; then

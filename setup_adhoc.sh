@@ -19,6 +19,8 @@ ip route add default via 10.10.1.10 dev wlan0
 route add -net 224.0.0.0 netmask 240.0.0.0 dev wlan0
 sudo chmod a+w /etc/resolv.conf
 sudo echo "nameserver 8.8.8.8">/etc/resolv.conf
+sudo sysctl -w net.core.wmem_default=31457280
+sudo sysctl -w net.core.rmem_default=2097152
 
 exit 0
 
