@@ -68,12 +68,12 @@ then
 	/camera/infra2/image_rect_raw/compressed \
 	/camera/infra1/camera_info \
 	/camera/infra2/camera_info \
-	/camera/depth/image_rect_raw \
-	/camera/depth/camera_info \
     /arducam/image/compressed \
 	&>$LOG_PATH/log_bag.txt &
 
     echo "rosbag:"$! > $BAG_PID_FILE
+	#/camera/depth/image_rect_raw \
+	#/camera/depth/camera_info \
 
 fi
 
