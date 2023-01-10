@@ -14,4 +14,4 @@ else
 fi
 
 echo "Start SwarmPilot"
-roslaunch swarm_pilot swarm_pilot.launch drone_id:=$DRONE_ID &> $LOG_PATH/log_swarm_pilot.txt &
+roslaunch swarm_pilot swarm_pilot.launch drone_id:=$DRONE_ID enable_planner:=START_PLAN &> $LOG_PATH/log_swarm_pilot.txt &

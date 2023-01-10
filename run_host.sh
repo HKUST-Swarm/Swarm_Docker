@@ -104,6 +104,16 @@ then
 fi
 
 
+if [ $USE_VICON -eq 1 ]
+then
+    if [ $USE_VICON_CTRL -eq 1 ]
+    then
+        roslaunch pos_vel_mocap odometry_emulator.launch self_id:=$DRONE_ID &> $LOG_PATH/log_vicon.txt &
+    fi
+else
+    roslaunch mocap_optitrack mocap.launch &> $LOG_PATH/log_vicon.txt & #Only for recording
+fi
+
 if [ $START_CONTROL -eq 1 ]  &&  [ $START_DOCKER -eq 0 ]
 then
     /home/dji/Swarm_Docker/run_control.sh
